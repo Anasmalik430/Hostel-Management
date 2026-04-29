@@ -36,8 +36,8 @@ const Navbar = () => {
             layout
             className={`relative flex justify-between items-center px-4 sm:px-8 rounded-full transition-all duration-500 ${
               isScrolled
-                ? "bg-white/90 py-4 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] border border-slate-200/50 h-16"
-                : "bg-white/50 py-10 backdrop-blur-sm h-20 border border-transparent"
+                ? "bg-white/90 py-12 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] border border-slate-200/50 h-16"
+                : "bg-white/50 py-15 backdrop-blur-sm h-20 border border-transparent"
             }`}
           >
             {/* Logo Section */}
