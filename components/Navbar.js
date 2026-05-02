@@ -99,7 +99,7 @@ const Navbar = () => {
 
               {user ? (
                 <button
-                  onClick={logout}
+                  onClick={(e) => { e.preventDefault(); logout(); }}
                   className="hidden cursor-pointer lg:flex bg-red-500/10 text-red-500 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
                 >
                   Logout
@@ -198,9 +198,12 @@ const Navbar = () => {
 
               <div className="mt-auto space-y-4">
                 {user ? (
-                   <button onClick={logout} className="w-full bg-red-500 text-white py-6 rounded-[28px] font-black text-sm uppercase tracking-widest shadow-xl">
-                      Logout System
-                   </button>
+                 <button 
+                   onClick={(e) => { e.preventDefault(); logout(); }}
+                   className="w-full bg-red-500 text-white py-6 rounded-[28px] font-black text-sm uppercase tracking-widest shadow-xl"
+                 >
+                    Logout System
+                 </button>
                 ) : (
                   <motion.button
                     whileTap={{ scale: 0.95 }}

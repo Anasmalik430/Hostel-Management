@@ -35,8 +35,9 @@ export default function AdminDashboard() {
 
   // Protect the route
   useEffect(() => {
+    // Only redirect to login if we're not authorized and NOT currently logging out
     if (!authLoading && !user) {
-      router.push("/auth/login");
+      router.replace("/auth/login");
     }
   }, [user, authLoading, router]);
 

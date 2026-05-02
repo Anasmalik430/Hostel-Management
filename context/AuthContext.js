@@ -55,8 +55,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    // Clear storage first
     localStorage.removeItem("elite_session");
+    // Update state to trigger UI updates
     setUser(null);
+    // Instant redirection without reload
     router.push("/");
   };
 
