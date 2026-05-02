@@ -4,7 +4,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 
 export const metadata = {
-  title: "Elite Hostel Management",
+  title: "Comfort Hostel BD",
   description: "Premium Living Reimagined",
 };
 

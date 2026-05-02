@@ -22,7 +22,7 @@ const amenities = [
     size: "small",
   },
   {
-    title: "Elite Community",
+    title: "Comfort Hostel Community",
     desc: "A vibrant ecosystem of ambitious students and professionals.",
     image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=800",
     size: "large",
