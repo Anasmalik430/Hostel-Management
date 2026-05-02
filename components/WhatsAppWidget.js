@@ -6,7 +6,7 @@ import { FaWhatsapp } from "react-icons/fa";
 const WhatsAppWidget = () => {
   const whatsappNumber = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "8801833376299";
   const message = encodeURIComponent(
-    "Hello ComfortHub Team! I'm interested in your services.",
+    "Hello ComfortHostelBD Team! I'm interested in your services.",
   );
   const whatsappUrl = `https://wa.me/${whatsappNumber.replace("+", "")}?text=${message}`;
 

@@ -152,7 +152,7 @@ const Footer = () => {
           <div className="flex items-center">
             <Link
               href={"https://nodeskdeveloper.in"}
-              className="flex items-center space-x-2 opacity-60 hover:opacity-100 transition-all cursor-pointer group"
+              className="flex items-center space-x-2 opacity-100 hover:opacity-60 hover:scale-110 transition-all cursor-pointer group"
             >
               <span className="text-[10px] font-black text-white italic tracking-tighter">
                 DESIGNED & BUILD BY{" "}

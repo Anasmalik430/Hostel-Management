@@ -105,7 +105,7 @@ const FAQ = () => {
                 </div>
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 italic">Email Inquiry</p>
-                  <Link href="mailto:comforthostel.bd2020@gmail.com" className="text-xl font-black text-[#111111]">[EMAIL_ADDRESS]</Link>
+                  <Link href="mailto:comforthostel.bd2020@gmail.com" className="text-xl font-black text-[#111111]">comforthostel.bd2020@gmail.com</Link>
                 </div>
                 <button className="w-full bg-[#111111] text-white py-4 rounded-2xl font-bold text-sm hover:bg-[#2563EB] transition-all">
                   Chat with Onboarding Team
