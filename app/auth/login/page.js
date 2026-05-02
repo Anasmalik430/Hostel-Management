@@ -1,32 +1,38 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
+  const { login, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      router.push("/admin/dashboard");
+    }
+  }, [user, router]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    // Elite Authentication Logic
-    setTimeout(() => {
-      if (formData.email === "anas000mal@gmail.com" && formData.password === "anasbhai") {
-        setIsLoading(false);
-        // Successful login
-        router.push("/admin/dashboard"); // Redirecting to Admin Panel
-      } else {
-        setIsLoading(false);
-        setError("Invalid elite credentials. Access Denied.");
-      }
-    }, 1500);
+    const result = await login(formData.email, formData.password);
+    
+    if (result.success) {
+      router.push("/admin/dashboard");
+    } else {
+      setError(result.error || "Invalid elite credentials.");
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -42,7 +48,6 @@ export default function Login() {
       >
         {/* Logo Section */}
         <div className="flex flex-col items-center mb-10">
-
           <h1 className="text-2xl font-black italic text-white tracking-tighter uppercase">
             ADMIN <span className="text-blue-500">GATEWAY</span>
           </h1>
@@ -74,10 +79,7 @@ export default function Login() {
 
             {/* Password Field */}
             <div className="space-y-3">
-              <div className="flex justify-between items-center ml-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Master Password</label>
-                <a href="#" className="text-[10px] hidden font-black text-blue-500 uppercase tracking-widest hover:text-white transition-colors">Forgot?</a>
-              </div>
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Master Password</label>
               <div className="relative group/field">
                 <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within/field:text-blue-500 transition-colors">
                   <Lock size={18} />
@@ -133,7 +135,7 @@ export default function Login() {
             </motion.button>
           </form>
         </div>
-</motion.div>
+      </motion.div>
     </div>
   );
 }

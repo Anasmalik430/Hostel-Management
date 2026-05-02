@@ -25,11 +25,28 @@ import {
   Users2,
 } from "lucide-react";
 import { useData } from "@/context/DataContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const { user, loading: authLoading, logout } = useAuth();
   const { hostels, rooms, isLoading, refreshData } = useData();
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Protect the route
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/auth/login");
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+        <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -228,7 +245,7 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    router.push("/auth/login");
+    logout();
   };
 
   const NavItem = ({ id, icon: Icon, label }) => (
@@ -262,7 +279,7 @@ export default function AdminDashboard() {
         </nav>
         <button
           onClick={handleLogout}
-          className="mt-auto flex items-center space-x-4 px-6 py-4 text-red-500 font-bold text-sm hover:bg-red-500/5 rounded-2xl transition-all"
+          className="mt-auto flex cursor-pointer items-center space-x-4 px-6 py-4 text-red-500 font-bold text-sm hover:bg-red-500/5 rounded-2xl transition-all"
         >
           <LogOut size={18} />
           <span>Logout System</span>

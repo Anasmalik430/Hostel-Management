@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,19 +48,13 @@ const Navbar = () => {
             <motion.div
               layout
               className="flex items-center group cursor-pointer"
+              onClick={() => router.push("/")}
             >
-              <div className="relative">
-                <img
-                  src="/logo.png"
-                  alt="logo"
-                  className="h-10 sm:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
               <div className="ml-3 flex flex-col justify-center leading-none">
                 <span className="text-xl font-black tracking-tighter text-[#111111] uppercase italic">
                   COMFORT<span className="text-[#2563EB]">HUB</span>
                 </span>
-                <span className="text-[9px] font-bold tracking-[0.3em] text -slate-400 uppercase mt-0.5">
+                <span className="text-[9px] font-bold tracking-[0.3em] text-slate-400 uppercase mt-0.5">
                   The Elite Stay
                 </span>
               </div>
@@ -80,24 +76,42 @@ const Navbar = () => {
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push("/auth/login")}
-                className="hidden cursor-pointer xl:block text-[13px] font-bold text-[#111111] hover:text-[#2563EB] px-4 transition-colors"
-              >
-                List Property
-              </button>
+              {user ? (
+                <button
+                  onClick={() => router.push("/admin/dashboard")}
+                  className="hidden cursor-pointer xl:block text-[13px] font-bold text-[#2563EB] px-4 transition-colors uppercase italic"
+                >
+                  Go to Dashboard
+                </button>
+              ) : (
+                <button
+                  onClick={() => router.push("/auth/login")}
+                  className="hidden cursor-pointer xl:block text-[13px] font-bold text-[#111111] hover:text-[#2563EB] px-4 transition-colors uppercase italic"
+                >
+                  List Property
+                </button>
+              )}
 
-              <motion.a
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                href="https://wa.me/+919690170502?text=Hello!%20I%20need%20your%20service"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden cursor-pointer lg:flex relative group bg-[#111111] text-white px-8 py-3.5 rounded-2xl text-[12px] font-black uppercase tracking-widest overflow-hidden shadow-lg"
-              >
-                <span className="relative z-10">Contact Us</span>
-                <div className="absolute inset-0 bg-[#2563EB] translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
-              </motion.a>
+              {user ? (
+                <button
+                  onClick={logout}
+                  className="hidden cursor-pointer lg:flex bg-red-500/10 text-red-500 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+                >
+                  Logout
+                </button>
+              ) : (
+                <motion.a
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  href="https://wa.me/+919690170502?text=Hello!%20I%20need%20your%20service"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden cursor-pointer lg:flex relative group bg-[#111111] text-white px-8 py-3.5 rounded-2xl text-[12px] font-black uppercase tracking-widest overflow-hidden shadow-lg"
+                >
+                  <span className="relative z-10">Contact Us</span>
+                  <div className="absolute inset-0 bg-[#2563EB] translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
+                </motion.a>
+              )}
 
               {/* Hamburger Icon */}
               <button
@@ -135,8 +149,7 @@ const Navbar = () => {
             >
               <div className="flex justify-between items-center mb-16">
                 <div className="flex items-center">
-                  <img src="/logo.png" alt="logo" className="h-10 w-auto" />
-                  <span className="ml-2 text-xl font-black italic uppercase">
+                  <span className="text-xl font-black italic uppercase">
                     COMFORT<span className="text-[#2563EB]">HUB</span>
                   </span>
                 </div>
@@ -144,18 +157,8 @@ const Navbar = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className="h-12 w-12 bg-slate-100 rounded-2xl flex items-center justify-center text-[#111111]"
                 >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2.5"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
@@ -177,31 +180,30 @@ const Navbar = () => {
                     </span>
                   </motion.a>
                 ))}
+                
+                {user && (
+                  <motion.button
+                    onClick={() => { router.push("/admin/dashboard"); setIsMenuOpen(false); }}
+                    className="py-5 text-3xl font-black text-[#2563EB] italic border-b border-slate-50 flex justify-between items-center uppercase tracking-tighter"
+                  >
+                    Dashboard
+                  </motion.button>
+                )}
               </div>
 
               <div className="mt-auto space-y-4">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  className="w-full bg-[#111111] text-white py-6 rounded-[28px] font-black text-sm uppercase tracking-widest shadow-xl flex items-center justify-center space-x-3"
-                >
-                  <span>Contact Us Now</span>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                {user ? (
+                   <button onClick={logout} className="w-full bg-red-500 text-white py-6 rounded-[28px] font-black text-sm uppercase tracking-widest shadow-xl">
+                      Logout System
+                   </button>
+                ) : (
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full bg-[#111111] text-white py-6 rounded-[28px] font-black text-sm uppercase tracking-widest shadow-xl flex items-center justify-center space-x-3"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="3"
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    />
-                  </svg>
-                </motion.button>
-                <button className="w-full bg-slate-50 text-[#111111] py-6 rounded-[28px] font-black text-xs uppercase tracking-widest border border-slate-200">
-                  Book Virtual Tour
-                </button>
+                    <span>Contact Us Now</span>
+                  </motion.button>
+                )}
               </div>
             </motion.div>
           </>
