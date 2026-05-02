@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Login() {
@@ -40,6 +40,7 @@ export default function Login() {
       {/* Dynamic Background */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[120px] -z-10" />
       <div className="absolute bottom-0 left-0 w-1/2 h-full bg-red-600/5 blur-[120px] -z-10" />
+      <div className="absolute top-12 left-12  bg-slate-800  h-16 w-16 cursor-pointer rounded-full flex items-center justify-center" onClick={() => router.push("/")}><ArrowLeft className="text-blue-500" size={24}/></div>
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
