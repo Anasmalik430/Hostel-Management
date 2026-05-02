@@ -2,6 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaArrowRight } from "react-icons/fa";
+import Link from "next/link";
 
 const Footer = () => {
   const footerLinks = [
@@ -129,9 +130,9 @@ const Footer = () => {
           
           <div className="flex items-center">
              
-             <div className="flex items-center space-x-2 opacity-60 hover:opacity-100 transition-all cursor-pointer group">
-               <span className="text-[10px] font-black text-white italic tracking-tighter">DESIGNED BY <span className="text-[#2563EB]">NODESKDEVELOPER</span></span>
-             </div>
+             <Link href={"https://nodeskdeveloper.in"} className="flex items-center space-x-2 opacity-60 hover:opacity-100 transition-all cursor-pointer group">
+               <span className="text-[10px] font-black text-white italic tracking-tighter">DESIGNED & BUILD BY <span className="text-[#2563EB]">NODESKDEVELOPER</span></span>
+             </Link>
           </div>
         </div>
       </div>
