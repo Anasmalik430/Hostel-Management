@@ -7,15 +7,27 @@ const Footer = () => {
   const footerLinks = [
     {
       title: "Explore",
-      links: ["Find a Room", "Amenities", "Locations", "Book a Tour"],
+      links: [
+        { name: "Find a Room", href: "#properties" },
+        { name: "Amenities", href: "#amenities" },
+        { name: "Locations", href: "#locations" },
+      ],
     },
     {
       title: "Support",
-      links: ["Help Center", "Privacy Policy", "Terms of Service", "List Property"],
+      links: [
+        { name: "Privacy Policy", href: "#" },
+        { name: "Terms of Service", href: "#" },
+        { name: "List Property", href: "/auth/me" },
+      ],
     },
     {
       title: "Company",
-      links: ["About Us", "Our Story", "Careers", "Contact"],
+      links: [
+        { name: "About Us", href: "#about" },
+        { name: "Our Story", href: "#about" },
+        { name: "Contact", href: "#faq" },
+      ],
     },
   ];
 
@@ -73,13 +85,13 @@ const Footer = () => {
               </h4>
               <ul className="space-y-4">
                 {column.links.map((link) => (
-                  <li key={link}>
+                  <li key={link.name}>
                     <a 
-                      href="#" 
+                      href={link.href} 
                       className="text-[14px] font-bold text-slate-400 hover:text-white transition-all flex items-center group"
                     >
                       <span className="w-0 group-hover:w-4 h-[2px] bg-[#2563EB] mr-0 group-hover:mr-2 transition-all opacity-0 group-hover:opacity-100" />
-                      {link}
+                      {link.name}
                     </a>
                   </li>
                 ))}

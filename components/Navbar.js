@@ -1,10 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,8 +19,8 @@ const Navbar = () => {
   const navLinks = [
     { name: "Properties", href: "#properties" },
     { name: "Amenities", href: "#amenities" },
-    { name: "Locations", href: "javascript:void(0)" },
-    { name: "About Us", href: "javascript:void(0)" },
+    { name: "Locations", href: "#locations" },
+    { name: "About Us", href: "#about" },
   ];
 
   return (
@@ -41,7 +43,10 @@ const Navbar = () => {
             }`}
           >
             {/* Logo Section */}
-            <motion.div layout className="flex items-center group cursor-pointer">
+            <motion.div
+              layout
+              className="flex items-center group cursor-pointer"
+            >
               <div className="relative">
                 <img
                   src="/logo.png"
@@ -53,7 +58,7 @@ const Navbar = () => {
                 <span className="text-xl font-black tracking-tighter text-[#111111] uppercase italic">
                   COMFORT<span className="text-[#2563EB]">HUB</span>
                 </span>
-                <span className="text-[9px] font-bold tracking-[0.3em] text-slate-400 uppercase mt-0.5">
+                <span className="text-[9px] font-bold tracking-[0.3em] text -slate-400 uppercase mt-0.5">
                   The Elite Stay
                 </span>
               </div>
@@ -75,18 +80,24 @@ const Navbar = () => {
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-4">
-              <button className="hidden xl:block text-[13px] font-bold text-[#111111] hover:text-[#2563EB] px-4 transition-colors">
+              <button
+                onClick={() => router.push("/auth/login")}
+                className="hidden cursor-pointer xl:block text-[13px] font-bold text-[#111111] hover:text-[#2563EB] px-4 transition-colors"
+              >
                 List Property
               </button>
-              
-              <motion.button
+
+              <motion.a
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="hidden lg:flex relative group bg-[#111111] text-white px-8 py-3.5 rounded-2xl text-[12px] font-black uppercase tracking-widest overflow-hidden shadow-lg"
+                href="https://wa.me/+919690170502?text=Hello!%20I%20need%20your%20service"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden cursor-pointer lg:flex relative group bg-[#111111] text-white px-8 py-3.5 rounded-2xl text-[12px] font-black uppercase tracking-widest overflow-hidden shadow-lg"
               >
                 <span className="relative z-10">Contact Us</span>
                 <div className="absolute inset-0 bg-[#2563EB] translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
-              </motion.button>
+              </motion.a>
 
               {/* Hamburger Icon */}
               <button
@@ -125,14 +136,26 @@ const Navbar = () => {
               <div className="flex justify-between items-center mb-16">
                 <div className="flex items-center">
                   <img src="/logo.png" alt="logo" className="h-10 w-auto" />
-                  <span className="ml-2 text-xl font-black italic uppercase">COMFORT<span className="text-[#2563EB]">HUB</span></span>
+                  <span className="ml-2 text-xl font-black italic uppercase">
+                    COMFORT<span className="text-[#2563EB]">HUB</span>
+                  </span>
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(false)}
                   className="h-12 w-12 bg-slate-100 rounded-2xl flex items-center justify-center text-[#111111]"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2.5"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -149,19 +172,31 @@ const Navbar = () => {
                     className="py-5 text-3xl font-black text-[#111111] italic border-b border-slate-50 flex justify-between items-center group uppercase tracking-tighter"
                   >
                     {link.name}
-                    <span className="text-[#2563EB] transform translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">→</span>
+                    <span className="text-[#2563EB] transform translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
+                      →
+                    </span>
                   </motion.a>
                 ))}
               </div>
 
               <div className="mt-auto space-y-4">
-                <motion.button 
+                <motion.button
                   whileTap={{ scale: 0.95 }}
                   className="w-full bg-[#111111] text-white py-6 rounded-[28px] font-black text-sm uppercase tracking-widest shadow-xl flex items-center justify-center space-x-3"
                 >
                   <span>Contact Us Now</span>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="3"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
                   </svg>
                 </motion.button>
                 <button className="w-full bg-slate-50 text-[#111111] py-6 rounded-[28px] font-black text-xs uppercase tracking-widest border border-slate-200">
