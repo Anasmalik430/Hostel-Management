@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 const faqs = [
   { 
@@ -100,11 +101,11 @@ const FAQ = () => {
               <div className="bg-slate-50 p-8 rounded-[40px] border border-slate-100 space-y-6">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 italic">Direct Contact</p>
-                  <p className="text-xl font-black text-[#111111]">+880 98765 43210</p>
+                  <Link href="tel:+8801833376299" className="text-xl font-black text-[#111111]">+8801833376299</Link>
                 </div>
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 italic">Email Inquiry</p>
-                  <p className="text-xl font-black text-[#111111]">support@nodeskdeveloper.in</p>
+                  <Link href="mailto:comforthostel.bd2020@gmail.com" className="text-xl font-black text-[#111111]">[EMAIL_ADDRESS]</Link>
                 </div>
                 <button className="w-full bg-[#111111] text-white py-4 rounded-2xl font-bold text-sm hover:bg-[#2563EB] transition-all">
                   Chat with Onboarding Team

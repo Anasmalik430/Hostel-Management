@@ -25,6 +25,8 @@ const Navbar = () => {
     { name: "About Us", href: "#about" },
   ];
 
+  const WhatsappNum = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801833376299"
+
   return (
     <>
       <motion.nav
@@ -57,7 +59,7 @@ const Navbar = () => {
               />
               <div className="ml-3 flex flex-col justify-center leading-none">
                 <span className="text-xl font-black tracking-tighter text-[#111111] uppercase italic">
-                  COMFORT<span className="text-[#2563EB]">HUB</span>
+                  COMFORT<span className="text-[#2563EB]">HOSTEL</span>BD
                 </span>
                 <span className="text-[9px] font-bold tracking-[0.3em] text-slate-400 uppercase mt-0.5">
                   The Elite Stay
@@ -108,7 +110,7 @@ const Navbar = () => {
                 <motion.a
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=Hello%20ComfortHub%20Team!%20I%20need%20your%20service`}
+                  href={`https://wa.me/${WhatsappNum}?text=Hello%20ComfortHub%20Team!%20I%20need%20your%20service`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hidden cursor-pointer lg:flex relative group bg-[#111111] text-white px-8 py-3.5 rounded-2xl text-[12px] font-black uppercase tracking-widest overflow-hidden shadow-lg"
@@ -155,7 +157,7 @@ const Navbar = () => {
               <div className="flex justify-between items-center mb-16">
                 <div className="flex items-center">
                   <span className="text-xl font-black italic uppercase">
-                    COMFORT<span className="text-[#2563EB]">HUB</span>
+                    COMFORT<span className="text-[#2563EB]">HOSTEL</span>BD
                   </span>
                 </div>
                 <button

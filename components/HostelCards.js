@@ -41,7 +41,7 @@ const HostelCards = ({ filters }) => {
   }, [rooms, filters]);
 
   const handleRequestViewing = (room) => {
-    const phoneNumber = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "+919690170502";
+    const phoneNumber = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "8801833376299";
     const message = `*ELITE STAYS - VIEWING REQUEST*\n\n` +
       `Hello! I'm interested in viewing a property.\n\n` +
       `*Unit Name:* ${room.name}\n` +

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Send, User, Phone, MessageSquare, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ const ContactForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const whatsappNumber = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "919690170502";
+    const whatsappNumber = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "8801833376299";
     const text = `*NEW CONTACT INQUIRY*\n\n` +
       `*Name:* ${formData.name}\n` +
       `*Phone:* ${formData.phone}\n` +
@@ -61,7 +62,7 @@ const ContactForm = () => {
                 </div>
                 <div>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Call Protocol</p>
-                  <p className="text-lg font-bold text-[#111111]">+91 96901 70502</p>
+                  <Link href={"tel:+8801833376299"} className="text-lg font-bold text-[#111111]">+880 1833376299</Link>
                 </div>
               </div>
             </div>
