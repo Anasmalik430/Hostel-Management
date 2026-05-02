@@ -40,6 +40,23 @@ const HostelCards = ({ filters }) => {
     });
   }, [rooms, filters]);
 
+  const handleRequestViewing = (room) => {
+    const phoneNumber = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "+919690170502";
+    const message = `*ELITE STAYS - VIEWING REQUEST*\n\n` +
+      `Hello! I'm interested in viewing a property.\n\n` +
+      `*Unit Name:* ${room.name}\n` +
+      `*Location:* ${room.location}\n` +
+      `*Price:* ৳${room.price}/month\n` +
+      `*Unit Type:* ${room.type}\n` +
+      `*Category:* ${room.gender}\n\n` +
+      `Please let me know when I can visit. Thank you!`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}?text=${encodedMessage}`;
+    
+    window.open(whatsappUrl, "_blank");
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -52,6 +69,7 @@ const HostelCards = ({ filters }) => {
 
   return (
     <div id="properties" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-slate-50/30">
+      {/* Header Section */}
       <div className="mb-16 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 relative">
         <div className="space-y-4">
           <h2 className="text-7xl font-black italic uppercase tracking-tighter text-[#111111] leading-none">
@@ -72,7 +90,7 @@ const HostelCards = ({ filters }) => {
             <motion.div
               layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
               key={room._id}
-              className="group relative bg-white rounded-[48px] overflow-hidden border border-slate-100 hover:border-blue-500/20 transition-all duration-700 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.11)]"
+              className="group cursor-pointer relative bg-white rounded-[48px] overflow-hidden border border-slate-100 hover:border-blue-500/20 transition-all duration-700 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.11)]"
             >
               <div className="relative h-[320px] overflow-hidden">
                 <img src={room.image || "https://images.unsplash.com/photo-1555854817-40e098ee7f5d?q=80&w=2070&auto=format&fit=crop"} alt={room.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
@@ -94,7 +112,11 @@ const HostelCards = ({ filters }) => {
                     <p className="text-3xl font-black text-blue-600 italic leading-none mt-1">৳{room.price}</p>
                   </div>
                 </div>
-                <motion.button whileHover={{ gap: "24px" }} className="w-full cursor-pointer bg-[#111111] text-white p-6 rounded-[30px] font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-4 transition-all shadow-xl hover:bg-blue-600">
+                <motion.button 
+                  onClick={() => handleRequestViewing(room)}
+                  whileHover={{ gap: "24px" }} 
+                  className="w-full cursor-pointer bg-[#111111] text-white p-6 rounded-[30px] font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-4 transition-all shadow-xl hover:bg-blue-600"
+                >
                   <span>Request Viewing</span><ArrowRight size={18} />
                 </motion.button>
               </div>
