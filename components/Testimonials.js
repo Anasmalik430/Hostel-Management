@@ -4,13 +4,13 @@ import { motion } from "framer-motion";
 
 const testimonials = [
   {
-    name: "Mohd Anas",
+    name: "Kinza Sheikh",
     role: "BCA Student",
     text: "The high-speed WiFi and quiet study zones are a lifesaver. Best hostel experience in Roorkee so far.",
     avatar: "https://i.pravatar.cc/150?u=anas"
   },
   {
-    name: "Areeba Khan",
+    name: "Afzala Khan",
     role: "Medical Intern",
     text: "Security was my main concern. With biometric entry and 24/7 CCTV, I feel completely safe here.",
     avatar: "https://i.pravatar.cc/150?u=areeba"

@@ -6,6 +6,7 @@ import HostelCards from "@/components/HostelCards";
 import Locations from "@/components/Locations";
 import AboutUs from "@/components/AboutUs";
 import Amenities from "@/components/Amenities";
+import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 import TrustStats from "@/components/TrustStats";
 import Testimonials from "@/components/Testimonials";
@@ -36,6 +37,7 @@ const Home = () => {
       <TrustStats />
       <Testimonials />
       <FAQ />
+      <ContactForm />
       <Footer />
     </main>
   );
