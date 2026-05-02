@@ -19,7 +19,7 @@ const Footer = () => {
       links: [
         { name: "Privacy Policy", href: "#" },
         { name: "Terms of Service", href: "#" },
-        { name: "List Property", href: "/auth/me" },
+        { name: "List Property", href: "/auth/dashboard" },
       ],
     },
     {

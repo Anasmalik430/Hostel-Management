@@ -10,17 +10,14 @@ export async function POST(req) {
     const user = await User.findOne({ email });
 
     if (!user) {
-      // For development: If no user exists at all, create this one as the first admin
-      const userCount = await User.countDocuments();
-      if (userCount === 0) {
-        const newUser = await User.create({ email, password });
-        return new Response(JSON.stringify({ 
-          success: true, 
-          user: { id: newUser._id, email: newUser.email },
-          token: "session_" + Date.now() // Simple session token
-        }), { status: 200 });
-      }
-      return new Response(JSON.stringify({ error: "Invalid credentials" }), { status: 401 });
+      // If this specific user doesn't exist, create them
+      // This is helpful if the user wants to use a specific email as the master admin
+      const newUser = await User.create({ email, password });
+      return new Response(JSON.stringify({ 
+        success: true, 
+        user: { id: newUser._id, email: newUser.email },
+        token: "session_" + Date.now() 
+      }), { status: 200 });
     }
 
     if (user.password !== password) {

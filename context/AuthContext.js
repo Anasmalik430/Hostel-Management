@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -55,16 +56,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    // Clear storage first
-    localStorage.removeItem("elite_session");
-    // Update state to trigger UI updates
-    setUser(null);
-    // Instant redirection without reload
+    setIsLoggingOut(true);
     router.push("/");
+    
+    setTimeout(() => {
+      localStorage.removeItem("elite_session");
+      setUser(null);
+      setIsLoggingOut(false);
+    }, 500); // 500ms for safety
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, isLoggingOut, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

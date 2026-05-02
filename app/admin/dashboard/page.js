@@ -29,25 +29,21 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const { user, loading: authLoading, logout } = useAuth();
+  const { user, loading: authLoading, isLoggingOut, logout } = useAuth();
   const { hostels, rooms, isLoading, refreshData } = useData();
   const [activeTab, setActiveTab] = useState("overview");
 
   // Protect the route
   useEffect(() => {
-    // Only redirect to login if we're not authorized and NOT currently logging out
-    if (!authLoading && !user) {
-      router.replace("/auth/login");
+    // Only redirect if we are strictly unauthorized, NOT logging out, and still on an admin path
+    if (!authLoading && !user && !isLoggingOut) {
+      const isStillOnAdmin = window.location.pathname.includes("/admin");
+      if (isStillOnAdmin) {
+        router.replace("/auth/login");
+      }
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, isLoggingOut, router]);
 
-  if (authLoading || !user) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -75,6 +71,14 @@ export default function AdminDashboard() {
     rentMonths: 0,
     gender: "Male Only",
   });
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+        <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   // No local fetchData — we use context's refreshData instead
 
