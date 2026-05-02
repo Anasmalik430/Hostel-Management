@@ -19,7 +19,7 @@ const locationData = [
   {
     name: "Dhanmondi, Dhaka",
     hostels: 2,
-    image: "https://images.unsplash.com/photo-1503174971373-b1f69850bbd6?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&q=80&w=800",
     desc: "Traditional charm meets modern cafes and lakeside tranquility."
   },
   {

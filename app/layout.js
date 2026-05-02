@@ -1,6 +1,7 @@
 import "./globals.css";
 import { DataProvider } from "@/context/DataContext";
 import { AuthProvider } from "@/context/AuthContext";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
 
 export const metadata = {
   title: "Elite Hostel Management",
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <DataProvider>
             {children}
+            <WhatsAppWidget />
           </DataProvider>
         </AuthProvider>
       </body>

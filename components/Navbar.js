@@ -108,7 +108,7 @@ const Navbar = () => {
                 <motion.a
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  href="https://wa.me/+919690170502?text=Hello%20ComfortHub%20Team!%20I%20need%20your%20service"
+                  href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=Hello%20ComfortHub%20Team!%20I%20need%20your%20service`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hidden cursor-pointer lg:flex relative group bg-[#111111] text-white px-8 py-3.5 rounded-2xl text-[12px] font-black uppercase tracking-widest overflow-hidden shadow-lg"
