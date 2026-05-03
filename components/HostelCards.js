@@ -105,18 +105,18 @@ const HostelCards = ({ filters }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-10">
         <AnimatePresence mode="popLayout">
           {displayRooms.map((room) => (
             <motion.div
               layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
               key={room._id}
-              className="group cursor-pointer relative bg-white rounded-[48px] overflow-hidden border border-slate-100 hover:border-blue-500/20 transition-all duration-700 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.11)]"
+              className="group cursor-pointer relative bg-white rounded-[20px] md:rounded-[48px] overflow-hidden border border-slate-100 hover:border-blue-500/20 transition-all duration-700 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.11)]"
             >
-              <div className="relative h-[320px] overflow-hidden">
+              <div className="relative h-[160px] md:h-[320px] overflow-hidden">
                 <img src={room.image || "https://images.unsplash.com/photo-1555854817-40e098ee7f5d?q=80&w=2070&auto=format&fit=crop"} alt={room.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-linear-to-t from-white via-transparent to-transparent opacity-40" />
-                <div className="absolute top-5 left-5 flex flex-row *:text-[10px] gap-2 *:px-4 *:py-2 *:font-mono">
+                <div className="absolute top-2 left-2 md:top-5 md:left-5 flex flex-row flex-wrap *:text-[8px] md:*:text-[10px] gap-1 md:gap-2 *:px-2 *:py-1 md:*:px-4 md:*:py-2 *:font-mono">
                   {activeStayType === "hostel" ? (
                     <>
                       <span className="bg-white/90 backdrop-blur-md text-[#111111] rounded-2xl font-black uppercase tracking-widest shadow-xl border border-white/20">{room.type}</span>
@@ -131,25 +131,25 @@ const HostelCards = ({ filters }) => {
                 </div>
               </div>
 
-              <div className="p-10 space-y-8">
-                <div className="flex justify-between items-start">
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-black italic uppercase tracking-tighter text-[#111111] group-hover:text-blue-600 transition-colors">{room.name}</h3>
-                    <div className="flex items-center text-slate-400 text-xs font-bold italic"><MapPin size={14} className="mr-2 text-blue-500" />{room.location || "Elite Guest Stay"}</div>
+              <div className="p-4 md:p-10 space-y-4 md:space-y-8">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-1 md:gap-0">
+                  <div className="space-y-0.5 md:space-y-2">
+                    <h3 className="text-xs md:text-2xl font-black italic uppercase tracking-tighter text-[#111111] group-hover:text-blue-600 transition-colors leading-tight">{room.name}</h3>
+                    <div className="flex items-center text-slate-400 text-[8px] md:text-xs font-bold italic"><MapPin className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 mr-1 md:mr-2 text-blue-500 flex-shrink-0" /><span className="truncate">{room.location || "Elite Guest Stay"}</span></div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{room.rentCycle || (activeStayType === 'hostel' ? 'Monthly' : 'Daily')}</p>
-                    <p className="text-3xl font-black text-blue-600 italic leading-none mt-1">৳{room.price}</p>
+                  <div className="text-left md:text-right mt-1 md:mt-0">
+                    <p className="text-[7px] md:text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none mb-0.5 md:mb-0">{room.rentCycle || (activeStayType === 'hostel' ? 'Monthly' : 'Daily')}</p>
+                    <p className="text-sm md:text-3xl font-black text-blue-600 italic leading-none mt-0.5 md:mt-1">৳{room.price}</p>
                   </div>
                 </div>
 
                 {/* Amenities Display */}
                 {room.amenities && room.amenities.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1 md:gap-2">
                     {room.amenities.map((amenity, idx) => (
                       <span 
                         key={idx} 
-                        className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 bg-slate-50 text-slate-400 border border-slate-100 rounded-full group-hover:bg-blue-50 group-hover:text-blue-500 group-hover:border-blue-100 transition-all duration-500"
+                        className="text-[7px] md:text-[9px] font-black uppercase tracking-widest px-2 py-1 md:px-3 md:py-1.5 bg-slate-50 text-slate-400 border border-slate-100 rounded-full group-hover:bg-blue-50 group-hover:text-blue-500 group-hover:border-blue-100 transition-all duration-500"
                       >
                         {amenity}
                       </span>
@@ -159,9 +159,9 @@ const HostelCards = ({ filters }) => {
                 <motion.button 
                   onClick={() => handleRequestViewing(room)}
                   whileHover={{ gap: "24px" }} 
-                  className="w-full cursor-pointer bg-[#111111] text-white p-6 rounded-[30px] font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-4 transition-all shadow-xl hover:bg-blue-600"
+                  className="w-full cursor-pointer bg-[#111111] text-white p-3 md:p-6 rounded-xl md:rounded-[30px] font-black text-[8px] md:text-xs uppercase tracking-[0.1em] md:tracking-[0.2em] flex items-center justify-center gap-1.5 md:gap-4 transition-all shadow-xl hover:bg-blue-600"
                 >
-                  <span>Request Viewing</span><ArrowRight size={18} />
+                  <span>Request Viewing</span><ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
                 </motion.button>
               </div>
             </motion.div>

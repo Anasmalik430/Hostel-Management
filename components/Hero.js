@@ -58,9 +58,9 @@ const Hero = ({ onSearch }) => {
   };
 
   return (
-    <section className="relative min-h-[95vh] pt-32 pb-20 flex items-center overflow-hidden bg-black">
+    <section className="relative min-h-[95vh] pt-32 pb-20 flex items-center overflow-hidden bg-white md:bg-black">
       {/* BACKGROUND IMAGE CAROUSEL */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 hidden md:block">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentImg}
@@ -73,7 +73,7 @@ const Hero = ({ onSearch }) => {
           />
         </AnimatePresence>
         {/* Overlay to ensure UI remains readable */}
-        <div className="absolute inset-0 bg-linear-to-r from-white via-white/40 to-transparent z-1" />
+        <div className="absolute inset-0 bg-linear-to-r from-white via-white/40 to-transparent z-1 hidden md:block" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
@@ -97,7 +97,7 @@ const Hero = ({ onSearch }) => {
 
           {/* Right Content - Search Widget */}
           <motion.div initial={{ opacity: 0, scale: 0.9, x: 50 }} animate={{ opacity: 1, scale: 1, x: 0 }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }} className="lg:col-span-5 relative">
-            <div className="bg-white/80 backdrop-blur-3xl p-8 sm:p-10 rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] border border-white/50 relative z-10 group overflow-visible">
+            <div className="bg-white md:bg-white/80 md:backdrop-blur-3xl p-5 md:p-8 sm:p-10 rounded-3xl md:rounded-[40px] md:shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] md:border md:border-white/50 relative z-10 group overflow-visible">
               <div className="space-y-8 relative z-10">
                 <div className="text-center lg:text-left mb-2">
                   <h3 className="text-sm font-black text-slate-500 uppercase tracking-[0.3em] italic">Quick Search</h3>
@@ -105,11 +105,11 @@ const Hero = ({ onSearch }) => {
                 
                 {/* Location Input */}
                 <div className="relative">
-                  <div className={`flex items-center p-5 rounded-3xl border transition-all duration-500 cursor-pointer ${showDropdown ? 'border-[#2563EB] bg-white ring-8 ring-blue-50/50' : 'border-slate-200 bg-white/50 hover:bg-white hover:border-slate-300'}`} onClick={() => setShowDropdown(!showDropdown)}>
-                    <div className="h-12 w-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center mr-4"><MapPin className="w-5 h-5 text-[#2563EB]" /></div>
+                  <div className={`flex items-center p-3 md:p-5 rounded-[20px] md:rounded-3xl border transition-all duration-500 cursor-pointer ${showDropdown ? 'border-[#2563EB] bg-white ring-4 md:ring-8 ring-blue-50/50' : 'border-slate-200 bg-slate-50 md:bg-white/50 hover:bg-white hover:border-slate-300'}`} onClick={() => setShowDropdown(!showDropdown)}>
+                    <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center mr-3 md:mr-4"><MapPin className="w-4 h-4 md:w-5 md:h-5 text-[#2563EB]" /></div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Location</p>
-                      <p className={`font-bold text-sm truncate ${location ? 'text-[#111111]' : 'text-slate-400'}`}>{location || "All Locations"}</p>
+                      <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Location</p>
+                      <p className={`font-bold text-xs md:text-sm truncate ${location ? 'text-[#111111]' : 'text-slate-400'}`}>{location || "All Locations"}</p>
                     </div>
                     <ChevronDown className={`w-4 h-4 transition-transform duration-500 text-slate-300 ${showDropdown ? 'rotate-180 text-[#2563EB]' : ''}`} />
                   </div>
@@ -135,27 +135,27 @@ const Hero = ({ onSearch }) => {
                   </AnimatePresence>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="flex flex-col p-5 rounded-3xl border border-slate-200 bg-white/50 hover:bg-white transition-all">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Room Type</p>
-                    <select value={roomType} onChange={(e) => setRoomType(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
+                  <div className="flex flex-col p-3 md:p-5 rounded-[20px] md:rounded-3xl border border-slate-200 bg-slate-50 md:bg-white/50 hover:bg-white transition-all">
+                    <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 md:mb-2">Room Type</p>
+                    <select value={roomType} onChange={(e) => setRoomType(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-xs md:text-sm">
                       <option value="Any Type">Any Type</option>
                       <option value="Single">Single</option>
                       <option value="Double">Double</option>
                       <option value="Triple">Triple</option>
                     </select>
                   </div>
-                  <div className="flex flex-col p-5 rounded-3xl border border-slate-200 bg-white/50 hover:bg-white transition-all">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Residing</p>
-                    <select value={gender} onChange={(e) => setGender(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-sm">
+                  <div className="flex flex-col p-3 md:p-5 rounded-[20px] md:rounded-3xl border border-slate-200 bg-slate-50 md:bg-white/50 hover:bg-white transition-all">
+                    <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 md:mb-2">Residing</p>
+                    <select value={gender} onChange={(e) => setGender(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-xs md:text-sm">
                       <option value="Any">Any</option>
-                      <option value="Male Only">Male Only</option>
-                      <option value="Female Only">Female Only</option>
+                      <option value="Male Only">Male</option>
+                      <option value="Female Only">Female</option>
                     </select>
                   </div>
-                  <div className="flex flex-col p-5 rounded-3xl border border-slate-200 bg-white/50 hover:bg-white transition-all">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Rent Cycle</p>
-                    <select value={rentCycle} onChange={(e) => setRentCycle(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-sm">
+                  <div className="col-span-2 sm:col-span-1 flex flex-col p-3 md:p-5 rounded-[20px] md:rounded-3xl border border-slate-200 bg-slate-50 md:bg-white/50 hover:bg-white transition-all">
+                    <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 md:mb-2">Rent Cycle</p>
+                    <select value={rentCycle} onChange={(e) => setRentCycle(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-xs md:text-sm">
                       <option value="Any Cycle">Any Cycle</option>
                       <option value="Day">Daily</option>
                       <option value="Week">Weekly</option>
@@ -165,7 +165,7 @@ const Hero = ({ onSearch }) => {
                   </div>
                 </div>
 
-                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleSearchClick} className="w-full relative group overflow-hidden bg-[#111111] text-white py-6 rounded-[30px] font-black text-sm uppercase tracking-[0.2em] transition-all shadow-[0_20px_40px_rgba(0,0,0,0.1)]">
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleSearchClick} className="w-full relative group overflow-hidden bg-[#111111] text-white py-4 md:py-6 rounded-2xl md:rounded-[30px] font-black text-xs md:text-sm uppercase tracking-[0.2em] transition-all shadow-[0_20px_40px_rgba(0,0,0,0.1)]">
                   <span className="relative z-10 flex items-center justify-center space-x-3"><span>Search Available Stays</span><ArrowRight size={20} className="translate-x-0 group-hover:translate-x-2 transition-transform" /></span>
                   <div className="absolute inset-0 bg-linear-to-r from-blue-600 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </motion.button>
