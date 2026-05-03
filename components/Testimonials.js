@@ -84,7 +84,7 @@ const Testimonials = () => {
           </h3>
         </div>
         <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-xs max-w-xs lg:text-right">
-          Join 2,000+ residents who have found their comfort zone with us.
+          Join 500+ residents who have found their comfort zone with us.
         </p>
       </div>
 

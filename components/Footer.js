@@ -4,8 +4,6 @@ import { motion } from "framer-motion";
 import {
   FaFacebookF,
   FaInstagram,
-  FaLinkedinIn,
-  FaTwitter,
   FaArrowRight,
 } from "react-icons/fa";
 import Link from "next/link";
