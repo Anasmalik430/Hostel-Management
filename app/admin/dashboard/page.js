@@ -69,7 +69,10 @@ export default function AdminDashboard() {
     image: "",
     rentUntil: null,
     rentMonths: 0,
+    rentDurationUnit: "Month",
     gender: "Male Only",
+    rentCycle: "Month",
+    amenities: "",
   });
 
   if (authLoading || !user) {
@@ -158,7 +161,14 @@ export default function AdminDashboard() {
     let finalRentUntil = roomFormData.rentUntil;
     if (!roomFormData.isAvailable && roomFormData.rentMonths > 0) {
       const date = new Date();
-      date.setMonth(date.getMonth() + parseInt(roomFormData.rentMonths));
+      const value = parseInt(roomFormData.rentMonths);
+      const unit = roomFormData.rentDurationUnit || "Month";
+
+      if (unit === "Day") date.setDate(date.getDate() + value);
+      else if (unit === "Week") date.setDate(date.getDate() + value * 7);
+      else if (unit === "Month") date.setMonth(date.getMonth() + value);
+      else if (unit === "Year") date.setFullYear(date.getFullYear() + value);
+
       finalRentUntil = date;
     } else if (roomFormData.isAvailable) {
       finalRentUntil = null;
@@ -167,7 +177,14 @@ export default function AdminDashboard() {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...roomFormData, rentUntil: finalRentUntil }),
+        body: JSON.stringify({ 
+          ...roomFormData, 
+          rentUntil: finalRentUntil,
+          rentDurationValue: roomFormData.rentMonths,
+          amenities: typeof roomFormData.amenities === "string" 
+            ? roomFormData.amenities.split(",").map(a => a.trim()).filter(a => a !== "")
+            : roomFormData.amenities
+        }),
       });
       if (res.ok) {
         setIsModalOpen(false);
@@ -230,7 +247,8 @@ export default function AdminDashboard() {
               typeof room.hostelId === "object"
                 ? room.hostelId._id
                 : room.hostelId,
-            rentMonths: 0,
+            rentDurationUnit: room.rentDurationUnit || "Month",
+            amenities: Array.isArray(room.amenities) ? room.amenities.join(", ") : room.amenities || "",
           }
         : {
             name: "",
@@ -242,7 +260,10 @@ export default function AdminDashboard() {
             image: "",
             rentUntil: null,
             rentMonths: 0,
+            rentDurationUnit: "Month",
             gender: "Male Only",
+            rentCycle: "Month",
+            amenities: "",
           },
     );
     setActiveTab("rooms");
@@ -268,7 +289,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white flex font-sans">
-      <aside className="w-72 bg-[#111111] border-r border-white/5 flex flex-col p-8 hidden lg:flex">
+      <aside className="w-72 bg-[#111111] border-r border-white/5 flex flex-col p-8 lg:flex">
         <div className="flex items-center space-x-3 mb-16">
           <div className="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
             <LayoutDashboard size={20} className="text-white" />
@@ -375,7 +396,7 @@ export default function AdminDashboard() {
                   {hostels.slice(0, 5).map((h) => (
                     <div
                       key={h._id}
-                      className="p-6 border-b border-white/5 flex items-center justify-between hover:bg-white/[0.02]"
+                      className="p-6 border-b border-white/5 flex items-center justify-between hover:bg-white/2"
                     >
                       <div className="flex items-center space-x-4">
                         <div className="h-10 w-10 bg-blue-600/10 rounded-xl flex items-center justify-center text-blue-500 font-black italic">
@@ -409,7 +430,7 @@ export default function AdminDashboard() {
                   {rooms.slice(0, 5).map((r) => (
                     <div
                       key={r._id}
-                      className="p-6 border-b border-white/5 flex items-center justify-between hover:bg-white/[0.02]"
+                      className="p-6 border-b border-white/5 flex items-center justify-between hover:bg-white/2"
                     >
                       <div className="flex items-center space-x-4">
                         {r.image ? (
@@ -482,7 +503,7 @@ export default function AdminDashboard() {
                         .map((hostel) => (
                           <tr
                             key={hostel._id}
-                            className="hover:bg-white/[0.02] transition-all group"
+                            className="hover:bg-white/2 transition-all group"
                           >
                             <td className="px-8 py-6 font-bold text-sm uppercase italic tracking-tight">
                               {hostel.name}
@@ -523,7 +544,7 @@ export default function AdminDashboard() {
                         .map((room) => (
                           <tr
                             key={room._id}
-                            className="hover:bg-white/[0.02] transition-all group"
+                            className="hover:bg-white/2 transition-all group"
                           >
                             <td className="px-8 py-6 flex items-center space-x-4">
                               {room.image && (
@@ -575,7 +596,7 @@ export default function AdminDashboard() {
       {/* Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -774,6 +795,74 @@ export default function AdminDashboard() {
                           </select>
                         </div>
                       </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                            Rent Cycle
+                          </label>
+                          <select
+                            value={roomFormData.rentCycle || "Month"}
+                            onChange={(e) =>
+                              setRoomFormData({
+                                ...roomFormData,
+                                rentCycle: e.target.value,
+                              })
+                            }
+                            className="w-full bg-white/5 border border-white/5 p-4 rounded-2xl outline-none font-bold appearance-none"
+                          >
+                            <option value="Day" className="bg-[#111111]">
+                              Daily
+                            </option>
+                            <option value="Week" className="bg-[#111111]">
+                              Weekly
+                            </option>
+                            <option value="Month" className="bg-[#111111]">
+                              Monthly
+                            </option>
+                            <option value="Year" className="bg-[#111111]">
+                              Yearly
+                            </option>
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                            Price
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            placeholder="Amount"
+                            value={roomFormData.price}
+                            onChange={(e) =>
+                              setRoomFormData({
+                                ...roomFormData,
+                                price: e.target.value,
+                              })
+                            }
+                            className="w-full bg-white/5 border border-white/5 p-4 rounded-2xl outline-none focus:border-blue-500 transition-all font-bold"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                          Amenities (Comma separated)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="WiFi, AC, Laundry, Geyser..."
+                          value={roomFormData.amenities}
+                          onChange={(e) =>
+                            setRoomFormData({
+                              ...roomFormData,
+                              amenities: e.target.value,
+                            })
+                          }
+                          className="w-full bg-white/5 border border-white/5 p-5 rounded-2xl outline-none focus:border-blue-500 transition-all font-bold"
+                        />
+                      </div>
+
                       <input
                         type="text"
                         required
@@ -819,36 +908,45 @@ export default function AdminDashboard() {
                           <span>{roomFormData.location}</span>
                         </div>
                       )}
-                      <input
-                        type="number"
-                        required
-                        placeholder="Price"
-                        value={roomFormData.price}
-                        onChange={(e) =>
-                          setRoomFormData({
-                            ...roomFormData,
-                            price: e.target.value,
-                          })
-                        }
-                        className="w-full bg-white/5 border border-white/5 p-5 rounded-2xl outline-none font-bold"
-                      />
                       {!roomFormData.isAvailable && (
-                        <select
-                          value={roomFormData.rentMonths}
-                          onChange={(e) =>
-                            setRoomFormData({
-                              ...roomFormData,
-                              rentMonths: e.target.value,
-                            })
-                          }
-                          className="w-full bg-blue-600/10 border border-blue-600/20 p-5 rounded-2xl font-black uppercase text-[10px]"
-                        >
-                          <option value="0">Duration...</option>
-                          <option value="1">1 Month</option>
-                          <option value="3">3 Months</option>
-                          <option value="6">6 Months</option>
-                          <option value="12">1 Year</option>
-                        </select>
+                        <div className="flex gap-3">
+                          <input
+                            type="number"
+                            min="1"
+                            value={roomFormData.rentMonths || ""}
+                            onChange={(e) =>
+                              setRoomFormData({
+                                ...roomFormData,
+                                rentMonths: e.target.value,
+                              })
+                            }
+                            placeholder="Value"
+                            className="w-1/2 bg-blue-600/10 border border-blue-600/20 p-5 rounded-2xl font-black text-xs outline-none focus:border-blue-600 transition-all"
+                          />
+                          <select
+                            value={roomFormData.rentDurationUnit || "Month"}
+                            onChange={(e) =>
+                              setRoomFormData({
+                                ...roomFormData,
+                                rentDurationUnit: e.target.value,
+                              })
+                            }
+                            className="w-1/2 bg-blue-600/10 border border-blue-600/20 p-5 rounded-2xl font-black uppercase text-[10px] outline-none"
+                          >
+                            <option className="bg-[#111111]" value="Day">
+                              Days
+                            </option>
+                            <option className="bg-[#111111]" value="Week">
+                              Weeks
+                            </option>
+                            <option className="bg-[#111111]" value="Month">
+                              Months
+                            </option>
+                            <option className="bg-[#111111]" value="Year">
+                              Years
+                            </option>
+                          </select>
+                        </div>
                       )}
                     </div>
                   </div>
