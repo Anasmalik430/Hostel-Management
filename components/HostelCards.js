@@ -36,7 +36,11 @@ const HostelCards = ({ filters }) => {
       const matchesGender = !filters?.gender || filters.gender === "Any" || 
         room.gender === filters.gender;
 
-      return matchesLocation && matchesType && matchesGender;
+      // Rent Cycle match
+      const matchesCycle = !filters?.rentCycle || filters.rentCycle === "Any Cycle" || 
+        room.rentCycle === filters.rentCycle;
+
+      return matchesLocation && matchesType && matchesGender && matchesCycle;
     });
   }, [rooms, filters]);
 

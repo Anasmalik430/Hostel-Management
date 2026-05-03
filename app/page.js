@@ -19,6 +19,7 @@ const Home = () => {
     location: "",       // "" = all locations
     roomType: "Any Type", // "Any Type" = show all types
     gender: "Any",      // "Any" = show all genders
+    rentCycle: "Any Cycle", // "Any Cycle" = show all cycles
   });
 
   const handleSearch = (newFilters) => {

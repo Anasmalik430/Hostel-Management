@@ -11,6 +11,7 @@ const Hero = ({ onSearch }) => {
   const [locationSearch, setLocationSearch] = useState("");
   const [roomType, setRoomType] = useState("Any Type");
   const [gender, setGender] = useState("Any");
+  const [rentCycle, setRentCycle] = useState("Any Cycle");
 
   // Extract unique locations from real rooms data
   const dynamicLocations = useMemo(() => {
@@ -28,7 +29,7 @@ const Hero = ({ onSearch }) => {
   const handleSearchClick = () => {
     if (onSearch) {
       // Sending data to parent (page.js)
-      onSearch({ location, roomType, gender });
+      onSearch({ location, roomType, gender, rentCycle });
     }
   };
 
@@ -108,7 +109,7 @@ const Hero = ({ onSearch }) => {
                   </AnimatePresence>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="flex flex-col p-5 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white transition-all">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Room Type</p>
                     <select value={roomType} onChange={(e) => setRoomType(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-sm">
@@ -124,6 +125,16 @@ const Hero = ({ onSearch }) => {
                       <option value="Any">Any</option>
                       <option value="Male Only">Male Only</option>
                       <option value="Female Only">Female Only</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col p-5 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white transition-all">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Rent Cycle</p>
+                    <select value={rentCycle} onChange={(e) => setRentCycle(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-sm">
+                      <option value="Any Cycle">Any Cycle</option>
+                      <option value="Day">Daily</option>
+                      <option value="Week">Weekly</option>
+                      <option value="Month">Monthly</option>
+                      <option value="Year">Yearly</option>
                     </select>
                   </div>
                 </div>

@@ -31,9 +31,9 @@ const Counter = ({ value, suffix = "" }) => {
 
 const TrustStats = () => {
   const stats = [
-    { label: "Active Residents", value: "2500", suffix: "+" },
-    { label: "Verified Hostels", value: "450", suffix: "+" },
-    { label: "Cities Covered", value: "12", suffix: "+" },
+    { label: "Active Residents", value: "500", suffix: "+" },
+    { label: "Verified Hostels", value: "10", suffix: "+" },
+    { label: "Cities Covered", value: "4", suffix: "+" },
     { label: "Safety Rating", value: "4.9", suffix: "/5", isFloat: true },
   ];
 
