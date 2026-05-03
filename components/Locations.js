@@ -5,13 +5,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 
 const locationData = [
   {
-    name: "Uttara, Dhaka",
-    hostels: 4,
-    image: "https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&q=80&w=800",
-    desc: "The educational hub with serene surroundings and premium connectivity."
-  },
-  {
-    name: "Banani, Dhaka",
+    name: "Gazipur, Dhaka",
     hostels: 3,
     image: "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?auto=format&fit=crop&q=80&w=800",
     desc: "Upscale living with vibrant nightlife."
@@ -22,12 +16,18 @@ const locationData = [
     image: "https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&q=80&w=800",
     desc: "Traditional charm meets modern cafes."
   },
-  {
-    name: "Gulshan, Dhaka",
-    hostels: 5,
-    image: "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&q=80&w=800",
-    desc: "The diplomat zone. Absolute security and international standards."
-  }
+  // {
+  //   name: "Gazipur, Dhaka",
+  //   hostels: 4,
+  //   image: "https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&q=80&w=800",
+  //   desc: "The educational hub with serene surroundings and premium connectivity."
+  // },
+  // {
+  //   name: "Dhanmondi, Dhaka",
+  //   hostels: 5,
+  //   image: "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&q=80&w=800",
+  //   desc: "The diplomat zone. Absolute security and international standards."
+  // }
 ];
 
 const Locations = () => {
@@ -49,7 +49,7 @@ const Locations = () => {
         </div>
 
         {/* Bento Grid Logic */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 md:gap-8">
           {locationData.map((loc, index) => (
             <motion.div
               key={index}
@@ -58,7 +58,7 @@ const Locations = () => {
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
               className={`group cursor-pointer relative h-[350px] md:h-[500px] rounded-[32px] md:rounded-[48px] overflow-hidden bg-white shadow-sm border border-slate-100 transition-all duration-700
-                ${index === 0 || index === 3 ? 'col-span-2' : 'col-span-1'} 
+                ${index === 0 || index === 3 ? 'col-span-2' : 'col-span-2'} 
                 lg:col-span-1`} // Back to 1 column on large screens
             >
               <div className="absolute inset-0 z-0">
