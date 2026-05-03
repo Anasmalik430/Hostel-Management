@@ -30,7 +30,7 @@ import { useAuth } from "@/context/AuthContext";
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, loading: authLoading, isLoggingOut, logout } = useAuth();
-  const { hostels, rooms, isLoading, refreshData } = useData();
+  const { hostels, rooms, guestRooms, isLoading, refreshData } = useData();
   const [activeTab, setActiveTab] = useState("overview");
 
   // Protect the route
@@ -50,15 +50,6 @@ export default function AdminDashboard() {
   const [uploading, setUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [hostelFormData, setHostelFormData] = useState({
-    name: "",
-    location: "",
-    image: "",
-    isAvailable: true,
-    tags: "",
-    amenities: "",
-  });
-
   const [roomFormData, setRoomFormData] = useState({
     name: "",
     hostelId: "",
@@ -72,6 +63,18 @@ export default function AdminDashboard() {
     rentDurationUnit: "Month",
     gender: "Male Only",
     rentCycle: "Month",
+    amenities: "",
+  });
+
+  const [guestRoomFormData, setGuestRoomFormData] = useState({
+    name: "",
+    roomNumber: "",
+    price: "",
+    isAvailable: true,
+    image: "",
+    rentCycle: "Day",
+    gender: "Male Only",
+    sharing: "Single",
     amenities: "",
   });
 
@@ -107,8 +110,10 @@ export default function AdminDashboard() {
       const fileData = await res.json();
       if (type === "hostel") {
         setHostelFormData((prev) => ({ ...prev, image: fileData.secure_url }));
-      } else {
+      } else if (type === "room") {
         setRoomFormData((prev) => ({ ...prev, image: fileData.secure_url }));
+      } else if (type === "guest-room") {
+        setGuestRoomFormData((prev) => ({ ...prev, image: fileData.secure_url }));
       }
     } catch (err) {
       console.error("Upload failed", err);
@@ -120,20 +125,11 @@ export default function AdminDashboard() {
   const handleHostelSubmit = async (e) => {
     e.preventDefault();
     const method = editingItem ? "PUT" : "POST";
-    const url = editingItem
-      ? `/api/hostels/${editingItem._id}`
-      : "/api/hostels";
+    const url = editingItem ? `/api/hostels/${editingItem._id}` : "/api/hostels";
     const processedData = {
       ...hostelFormData,
-      price: 0,
-      tags:
-        typeof hostelFormData.tags === "string"
-          ? hostelFormData.tags.split(",").map((t) => t.trim())
-          : hostelFormData.tags,
-      amenities:
-        typeof hostelFormData.amenities === "string"
-          ? hostelFormData.amenities.split(",").map((a) => a.trim())
-          : hostelFormData.amenities,
+      tags: typeof hostelFormData.tags === "string" ? hostelFormData.tags.split(",").map(t => t.trim()).filter(t => t !== "") : hostelFormData.tags,
+      amenities: typeof hostelFormData.amenities === "string" ? hostelFormData.amenities.split(",").map(a => a.trim()).filter(a => a !== "") : hostelFormData.amenities,
     };
     try {
       const res = await fetch(url, {
@@ -145,9 +141,6 @@ export default function AdminDashboard() {
         setIsModalOpen(false);
         setEditingItem(null);
         await refreshData();
-      } else {
-        const errData = await res.json();
-        alert("Error: " + errData.error);
       }
     } catch (err) {
       console.error("Submit failed", err);
@@ -185,6 +178,37 @@ export default function AdminDashboard() {
             ? roomFormData.amenities.split(",").map(a => a.trim()).filter(a => a !== "")
             : roomFormData.amenities
         }),
+      });
+      if (res.ok) {
+        setIsModalOpen(false);
+        setEditingItem(null);
+        await refreshData();
+      } else {
+        const errData = await res.json();
+        alert("Error: " + errData.error);
+      }
+    } catch (err) {
+      console.error("Submit failed", err);
+    }
+  };
+
+  const handleGuestRoomSubmit = async (e) => {
+    e.preventDefault();
+    const method = editingItem ? "PUT" : "POST";
+    const url = editingItem ? `/api/guestrooms/${editingItem._id}` : "/api/guestrooms";
+    
+    const processedData = {
+      ...guestRoomFormData,
+      amenities: typeof guestRoomFormData.amenities === "string" 
+        ? guestRoomFormData.amenities.split(",").map(a => a.trim()).filter(a => a !== "")
+        : guestRoomFormData.amenities
+    };
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(processedData),
       });
       if (res.ok) {
         setIsModalOpen(false);
@@ -248,6 +272,7 @@ export default function AdminDashboard() {
                 ? room.hostelId._id
                 : room.hostelId,
             rentDurationUnit: room.rentDurationUnit || "Month",
+            rentMonths: room.rentDurationValue || 0,
             amenities: Array.isArray(room.amenities) ? room.amenities.join(", ") : room.amenities || "",
           }
         : {
@@ -267,6 +292,32 @@ export default function AdminDashboard() {
           },
     );
     setActiveTab("rooms");
+    setIsModalOpen(true);
+  };
+
+  const openGuestRoomModal = (room = null) => {
+    setEditingItem(room);
+    setGuestRoomFormData(
+      room
+        ? {
+            ...room,
+            gender: room.gender || "Any",
+            sharing: room.sharing || "Single",
+            amenities: Array.isArray(room.amenities) ? room.amenities.join(", ") : room.amenities || "",
+          }
+        : {
+            name: "",
+            roomNumber: "",
+            price: "",
+            isAvailable: true,
+            image: "",
+            rentCycle: "Day",
+            gender: "Male Only",
+            sharing: "Single",
+            amenities: "",
+          },
+    );
+    setActiveTab("guest-rooms");
     setIsModalOpen(true);
   };
 
@@ -302,6 +353,7 @@ export default function AdminDashboard() {
           <NavItem id="overview" icon={LayoutDashboard} label="Overview" />
           <NavItem id="hostels" icon={Home} label="Hostels" />
           <NavItem id="rooms" icon={DoorOpen} label="Rooms" />
+          <NavItem id="guest-rooms" icon={Users} label="Guest Rooms" />
         </nav>
         <button
           onClick={handleLogout}
@@ -320,7 +372,9 @@ export default function AdminDashboard() {
                 ? "Dashboard Overview"
                 : activeTab === "hostels"
                   ? "Hostel Management"
-                  : "Room Management"}
+                  : activeTab === "rooms"
+                    ? "Room Management"
+                    : "Guest Room Management"}
             </h1>
             <p className="text-slate-500 text-sm font-medium italic">
               Protocol Status: {isLoading ? "Synchronizing..." : "Active"}
@@ -330,20 +384,20 @@ export default function AdminDashboard() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => openHostelModal()}
-              className="bg-white/5 cursor-pointer border border-white/10 hover:bg-white/10 text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center space-x-3 transition-all"
-            >
-              <Home size={18} className="text-blue-500" />
-              <span>Add Hostel</span>
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => openRoomModal()}
+              onClick={() => {
+                if (activeTab === "hostels") openHostelModal();
+                else if (activeTab === "rooms") openRoomModal();
+                else if (activeTab === "guest-rooms") openGuestRoomModal();
+                else openRoomModal(); // Default fallback
+              }}
               className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center space-x-3 shadow-xl shadow-blue-600/20 transition-all"
             >
               <Plus size={18} />
-              <span>Add Room</span>
+              <span>
+                {activeTab === "hostels" ? "Add Hostel" : 
+                 activeTab === "rooms" ? "Add Room" : 
+                 activeTab === "guest-rooms" ? "Add Guest Room" : "Add Item"}
+              </span>
             </motion.button>
           </div>
         </header>
@@ -480,10 +534,10 @@ export default function AdminDashboard() {
                 <thead>
                   <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-white/5">
                     <th className="px-8 py-6">
-                      {activeTab === "hostels" ? "Hostel Name" : "Room Unit"}
+                      {activeTab === "hostels" ? "Hostel Name" : activeTab === "rooms" ? "Room Unit" : "Guest Room"}
                     </th>
                     <th className="px-8 py-6">
-                      {activeTab === "hostels" ? "Location" : "Hostel"}
+                      {activeTab === "hostels" ? "Location" : activeTab === "rooms" ? "Hostel" : "Room Number"}
                     </th>
                     <th className="px-8 py-6">
                       {activeTab === "hostels" ? "Status" : "Price"}
@@ -535,7 +589,8 @@ export default function AdminDashboard() {
                             </td>
                           </tr>
                         ))
-                    : rooms
+                    : activeTab === "rooms" 
+                    ? rooms
                         .filter((r) =>
                           r.name
                             .toLowerCase()
@@ -585,6 +640,57 @@ export default function AdminDashboard() {
                               </button>
                             </td>
                           </tr>
+                        ))
+                    : guestRooms
+                        .filter((gr) =>
+                          gr.name
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase()),
+                        )
+                        .map((groom) => (
+                          <tr
+                            key={groom._id}
+                            className="hover:bg-white/2 transition-all group"
+                          >
+                            <td className="px-8 py-6 flex items-center space-x-4">
+                              {groom.image && (
+                                <img
+                                  src={groom.image}
+                                  className="h-10 w-10 rounded-lg object-cover"
+                                />
+                              )}
+                              <span className="font-bold text-sm uppercase italic tracking-tight">
+                                {groom.name}
+                              </span>
+                            </td>
+                            <td className="px-8 py-6 text-slate-400 text-sm italic font-bold">
+                              No. {groom.roomNumber} • {groom.type}
+                            </td>
+                            <td className="px-8 py-6 font-black text-blue-500">
+                              ৳{groom.price}/{groom.rentCycle}
+                            </td>
+                            <td className="px-8 py-6">
+                              <span
+                                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${groom.isAvailable ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"}`}
+                              >
+                                {groom.isAvailable ? "Available" : "Occupied"}
+                              </span>
+                            </td>
+                            <td className="px-8 py-6 text-right space-x-2">
+                              <button
+                                onClick={() => openGuestRoomModal(groom)}
+                                className="p-3 bg-white/5 rounded-xl hover:bg-blue-600 transition-all text-slate-400 hover:text-white"
+                              >
+                                <Edit2 size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(groom._id, "guestroom")}
+                                className="p-3 bg-white/5 rounded-xl hover:bg-red-600 transition-all text-slate-400 hover:text-white"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </td>
+                          </tr>
                         ))}
                 </tbody>
               </table>
@@ -614,7 +720,7 @@ export default function AdminDashboard() {
                 <h2 className="text-2xl lg:text-3xl font-black italic uppercase tracking-tighter">
                   {editingItem ? "Edit" : "Add"}{" "}
                   <span className="text-blue-500">
-                    {activeTab === "rooms" ? "Room" : "Hostel"}
+                    {activeTab === "rooms" ? "Room" : activeTab === "guest-rooms" ? "Guest Room" : "Hostel"}
                   </span>
                 </h2>
                 <button
@@ -689,6 +795,172 @@ export default function AdminDashboard() {
                     className="w-full bg-blue-600 py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-600/20"
                   >
                     {editingItem ? "Update Hostel" : "Create Hostel"}
+                  </button>
+                </form>
+              ) : activeTab === "guest-rooms" ? (
+                <form
+                  onSubmit={handleGuestRoomSubmit}
+                  className="p-6 lg:p-10 overflow-y-auto space-y-8"
+                >
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                        Guest Room Image
+                      </label>
+                      <div className="relative h-48 w-full bg-white/5 rounded-3xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center group overflow-hidden">
+                        {guestRoomFormData.image ? (
+                          <img
+                            src={guestRoomFormData.image}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Upload className="text-slate-500" />
+                        )}
+                        <input
+                          type="file"
+                          onChange={(e) => handleImageUpload(e, "guest-room")}
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                        {uploading && (
+                          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                            <div className="h-6 w-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="pt-4 flex items-center justify-between bg-white/2 p-4 rounded-2xl">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                          Status
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setGuestRoomFormData({
+                              ...guestRoomFormData,
+                              isAvailable: !guestRoomFormData.isAvailable,
+                            })
+                          }
+                          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${guestRoomFormData.isAvailable ? "bg-green-500" : "bg-red-500"}`}
+                        >
+                          {guestRoomFormData.isAvailable
+                            ? "Available"
+                            : "Occupied"}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                            Residing
+                          </label>
+                          <select
+                            value={guestRoomFormData.gender}
+                            onChange={(e) =>
+                              setGuestRoomFormData({
+                                ...guestRoomFormData,
+                                gender: e.target.value,
+                              })
+                            }
+                            className="w-full bg-white/5 border border-white/5 p-4 rounded-2xl outline-none font-bold appearance-none"
+                          >
+                            <option value="Male Only" className="bg-[#111111]">Male Only</option>
+                            <option value="Female Only" className="bg-[#111111]">Female Only</option>
+                            <option value="Any" className="bg-[#111111]">Any Gender</option>
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                            Sharing Type
+                          </label>
+                          <select
+                            value={guestRoomFormData.sharing}
+                            onChange={(e) =>
+                              setGuestRoomFormData({
+                                ...guestRoomFormData,
+                                sharing: e.target.value,
+                              })
+                            }
+                            className="w-full bg-white/5 border border-white/5 p-4 rounded-2xl outline-none font-bold appearance-none"
+                          >
+                            <option value="Single" className="bg-[#111111]">Single</option>
+                            <option value="Double" className="bg-[#111111]">Double</option>
+                            <option value="Triple" className="bg-[#111111]">Triple</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                            Price
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            placeholder="Price"
+                            value={guestRoomFormData.price}
+                            onChange={(e) =>
+                              setGuestRoomFormData({
+                                ...guestRoomFormData,
+                                price: e.target.value,
+                              })
+                            }
+                            className="w-full bg-white/5 border border-white/5 p-4 rounded-2xl outline-none focus:border-blue-500 transition-all font-bold"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                          Amenities (Comma separated)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="WiFi, TV, Breakfast..."
+                          value={guestRoomFormData.amenities}
+                          onChange={(e) =>
+                            setGuestRoomFormData({
+                              ...guestRoomFormData,
+                              amenities: e.target.value,
+                            })
+                          }
+                          className="w-full bg-white/5 border border-white/5 p-5 rounded-2xl outline-none focus:border-blue-500 transition-all font-bold"
+                        />
+                      </div>
+
+                      <input
+                        type="text"
+                        required
+                        placeholder="Guest Room Name"
+                        value={guestRoomFormData.name}
+                        onChange={(e) =>
+                          setGuestRoomFormData({
+                            ...guestRoomFormData,
+                            name: e.target.value,
+                          })
+                        }
+                        className="w-full bg-white/5 border border-white/5 p-5 rounded-2xl outline-none focus:border-blue-500 transition-all font-bold"
+                      />
+                      <input
+                        type="text"
+                        required
+                        placeholder="Room Number"
+                        value={guestRoomFormData.roomNumber}
+                        onChange={(e) =>
+                          setGuestRoomFormData({
+                            ...guestRoomFormData,
+                            roomNumber: e.target.value,
+                          })
+                        }
+                        className="w-full bg-white/5 border border-white/5 p-5 rounded-2xl outline-none focus:border-blue-500 transition-all font-bold"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-600/20"
+                  >
+                    {editingItem ? "Update Guest Room" : "Create Guest Room"}
                   </button>
                 </form>
               ) : (
