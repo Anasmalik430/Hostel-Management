@@ -33,7 +33,7 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-100 transition-all duration-500 ${
           isScrolled ? "py-3" : "py-6"
         }`}
       >
@@ -42,8 +42,8 @@ const Navbar = () => {
             layout
             className={`relative flex justify-between items-center px-4 sm:px-8 rounded-full transition-all duration-500 ${
               isScrolled
-                ? "bg-white/90 py-12 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] border border-slate-200/50 h-16"
-                : "bg-white/50 py-15 backdrop-blur-sm h-20 border border-transparent"
+                ? "bg-white py-12 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] border border-slate-200/50 h-16"
+                : "bg-white py-12 backdrop-blur-sm h-20 border border-transparent"
             }`}
           >
             {/* Logo Section */}
@@ -145,14 +145,14 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMenuOpen(false)}
-              className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-md lg:hidden"
+              className="fixed inset-0 z-200 bg-black/60 backdrop-blur-md lg:hidden"
             />
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed right-0 top-0 bottom-0 w-[90%] max-w-sm bg-white z-[201] lg:hidden shadow-2xl p-8 flex flex-col"
+              className="fixed right-0 top-0 bottom-0 w-[90%] max-w-sm bg-white z-201 lg:hidden shadow-2xl p-8 flex flex-col"
             >
               <div className="flex justify-between items-center mb-16">
                 <div className="flex items-center">

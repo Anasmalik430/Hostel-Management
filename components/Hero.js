@@ -1,8 +1,16 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useData } from "@/context/DataContext";
 import { Search, MapPin, ChevronDown, ArrowRight } from "lucide-react";
+
+// Curated high-quality hostel/interior images from Unsplash
+const BACKGROUND_IMAGES = [
+  "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=2070&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1520277739336-7bf67edfa768?q=80&w=2070&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop",
+  // "https://images.unsplash.com/photo-1555854817-5b2147a52d0f?q=80&w=2070&auto=format&fit=crop",
+];
 
 const Hero = ({ onSearch }) => {
   const { rooms } = useData();
@@ -13,13 +21,21 @@ const Hero = ({ onSearch }) => {
   const [gender, setGender] = useState("Any");
   const [rentCycle, setRentCycle] = useState("Any Cycle");
 
-  // Extract unique locations from real rooms data
+  // Carousel State
+  const [currentImg, setCurrentImg] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImg((prev) => (prev + 1) % BACKGROUND_IMAGES.length);
+    }, 5000); // Change image every 5 seconds
+    return () => clearInterval(timer);
+  }, []);
+
   const dynamicLocations = useMemo(() => {
     const locs = rooms.map(r => r.location).filter(Boolean);
     return Array.from(new Set(locs));
   }, [rooms]);
 
-  // Filter dropdown options by search text
   const filteredLocations = useMemo(() => {
     return dynamicLocations.filter(loc =>
       loc.toLowerCase().includes(locationSearch.toLowerCase())
@@ -28,7 +44,6 @@ const Hero = ({ onSearch }) => {
 
   const handleSearchClick = () => {
     if (onSearch) {
-      // Sending data to parent (page.js)
       onSearch({ location, roomType, gender, rentCycle });
     }
   };
@@ -43,43 +58,54 @@ const Hero = ({ onSearch }) => {
   };
 
   return (
-    <section className="relative min-h-[95vh] pt-32 pb-20 flex items-center overflow-hidden bg-white">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-2/3 h-full -z-10 overflow-hidden pointer-events-none">
-        <motion.div animate={{ scale: [1, 1.1, 1], rotate: [0, 5, 0] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute -top-24 -right-24 w-[600px] h-[600px] bg-blue-50/50 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-red-50/30 rounded-full blur-[100px]" />
+    <section className="relative min-h-[95vh] pt-32 pb-20 flex items-center overflow-hidden bg-black">
+      {/* BACKGROUND IMAGE CAROUSEL */}
+      <div className="absolute inset-0 z-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentImg}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 0.6, scale: 1 }} // 0.6 opacity keeps text readable
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${BACKGROUND_IMAGES[currentImg]})` }}
+          />
+        </AnimatePresence>
+        {/* Overlay to ensure UI remains readable */}
+        <div className="absolute inset-0 bg-linear-to-r from-white via-white/40 to-transparent z-1" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
         <div className="grid lg:grid-cols-12 gap-12 items-center">
           
           {/* Left Content */}
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="lg:col-span-7 space-y-10 text-center lg:text-left">
             <div>
-              <motion.div variants={itemVariants} className="inline-flex items-center space-x-2 bg-slate-50 border border-slate-100 px-4 py-2 rounded-full mb-6">
+              <motion.div variants={itemVariants} className="inline-flex items-center space-x-2 bg-white/50 backdrop-blur-md border border-slate-200 px-4 py-2 rounded-full mb-6">
                 <span className="flex h-2 w-2 rounded-full bg-[#2563EB] animate-pulse" />
-                <span className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">Premium Living Reimagined</span>
+                <span className="text-[11px] font-black text-slate-700 uppercase tracking-[0.2em]">Premium Living Reimagined</span>
               </motion.div>
               <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl font-black text-[#111111] leading-[0.95] italic tracking-tighter">
                 YOUR HOME <br /><span className="text-[#2563EB] relative">BEYOND <motion.svg initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: 1 }} className="absolute -bottom-2 left-0 w-full h-3 text-[#DC2626]/20" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 25 0, 50 5 T 100 5" fill="none" stroke="currentColor" strokeWidth="4" /></motion.svg></span> <br />BOUNDARIES.
               </motion.h1>
             </div>
-            <motion.p variants={itemVariants} className="text-xl text-slate-500 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+            <motion.p variants={itemVariants} className="text-xl text-slate-800 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
               Ditch the basic. Join a community that inspires. Modern hostels with high-end security, ultra-fast WiFi, and curated spaces.
             </motion.p>
           </motion.div>
 
           {/* Right Content - Search Widget */}
           <motion.div initial={{ opacity: 0, scale: 0.9, x: 50 }} animate={{ opacity: 1, scale: 1, x: 0 }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }} className="lg:col-span-5 relative">
-            <div className="bg-white/70 backdrop-blur-3xl p-8 sm:p-10 rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.12)] border border-white relative z-10 group overflow-visible">
+            <div className="bg-white/80 backdrop-blur-3xl p-8 sm:p-10 rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] border border-white/50 relative z-10 group overflow-visible">
               <div className="space-y-8 relative z-10">
                 <div className="text-center lg:text-left mb-2">
-                  <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.3em] italic">Quick Search</h3>
+                  <h3 className="text-sm font-black text-slate-500 uppercase tracking-[0.3em] italic">Quick Search</h3>
                 </div>
                 
                 {/* Location Input */}
                 <div className="relative">
-                  <div className={`flex items-center p-5 rounded-3xl border transition-all duration-500 cursor-pointer ${showDropdown ? 'border-[#2563EB] bg-white ring-8 ring-blue-50/50' : 'border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200'}`} onClick={() => setShowDropdown(!showDropdown)}>
+                  <div className={`flex items-center p-5 rounded-3xl border transition-all duration-500 cursor-pointer ${showDropdown ? 'border-[#2563EB] bg-white ring-8 ring-blue-50/50' : 'border-slate-200 bg-white/50 hover:bg-white hover:border-slate-300'}`} onClick={() => setShowDropdown(!showDropdown)}>
                     <div className="h-12 w-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center mr-4"><MapPin className="w-5 h-5 text-[#2563EB]" /></div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Location</p>
@@ -90,7 +116,7 @@ const Hero = ({ onSearch }) => {
 
                   <AnimatePresence>
                     {showDropdown && (
-                      <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute top-[110%] left-0 right-0 bg-white border border-slate-100 rounded-3xl shadow-2xl z-[200] overflow-hidden">
+                      <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute top-[110%] left-0 right-0 bg-white border border-slate-100 rounded-3xl shadow-2xl z-200 overflow-hidden">
                         <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center space-x-3">
                           <Search size={15} className="text-slate-400" />
                           <input type="text" autoFocus placeholder="Search area..." value={locationSearch} onChange={(e) => setLocationSearch(e.target.value)} onClick={(e) => e.stopPropagation()} className="bg-transparent border-none outline-none w-full text-sm font-bold text-slate-700" />
@@ -110,7 +136,7 @@ const Hero = ({ onSearch }) => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="flex flex-col p-5 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white transition-all">
+                  <div className="flex flex-col p-5 rounded-3xl border border-slate-200 bg-white/50 hover:bg-white transition-all">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Room Type</p>
                     <select value={roomType} onChange={(e) => setRoomType(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-sm">
                       <option value="Any Type">Any Type</option>
@@ -119,7 +145,7 @@ const Hero = ({ onSearch }) => {
                       <option value="Triple">Triple</option>
                     </select>
                   </div>
-                  <div className="flex flex-col p-5 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white transition-all">
+                  <div className="flex flex-col p-5 rounded-3xl border border-slate-200 bg-white/50 hover:bg-white transition-all">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Residing</p>
                     <select value={gender} onChange={(e) => setGender(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-sm">
                       <option value="Any">Any</option>
@@ -127,7 +153,7 @@ const Hero = ({ onSearch }) => {
                       <option value="Female Only">Female Only</option>
                     </select>
                   </div>
-                  <div className="flex flex-col p-5 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white transition-all">
+                  <div className="flex flex-col p-5 rounded-3xl border border-slate-200 bg-white/50 hover:bg-white transition-all">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Rent Cycle</p>
                     <select value={rentCycle} onChange={(e) => setRentCycle(e.target.value)} className="bg-transparent font-bold text-[#111111] outline-none appearance-none cursor-pointer text-sm">
                       <option value="Any Cycle">Any Cycle</option>
@@ -141,7 +167,7 @@ const Hero = ({ onSearch }) => {
 
                 <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleSearchClick} className="w-full relative group overflow-hidden bg-[#111111] text-white py-6 rounded-[30px] font-black text-sm uppercase tracking-[0.2em] transition-all shadow-[0_20px_40px_rgba(0,0,0,0.1)]">
                   <span className="relative z-10 flex items-center justify-center space-x-3"><span>Search Available Stays</span><ArrowRight size={20} className="translate-x-0 group-hover:translate-x-2 transition-transform" /></span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  <div className="absolute inset-0 bg-linear-to-r from-blue-600 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </motion.button>
               </div>
             </div>
