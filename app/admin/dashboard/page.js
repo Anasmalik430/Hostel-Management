@@ -9,20 +9,13 @@ import {
   Trash2,
   LayoutDashboard,
   Home,
-  Settings,
   LogOut,
   Upload,
   X,
   CheckCircle,
-  AlertCircle,
-  TrendingUp,
   Users,
   DoorOpen,
-  Bed,
   MapPin,
-  Menu,
-  Clock,
-  Users2,
 } from "lucide-react";
 import { useData } from "@/context/DataContext";
 import { useAuth } from "@/context/AuthContext";
@@ -32,6 +25,12 @@ export default function AdminDashboard() {
   const { user, loading: authLoading, isLoggingOut, logout } = useAuth();
   const { hostels, rooms, guestRooms, isLoading, refreshData } = useData();
   const [activeTab, setActiveTab] = useState("overview");
+  const [hostelFormData, setHostelFormData] = useState({
+  name: "",
+  location: "",
+  image: "",
+  isAvailable: true,
+});
 
   // Protect the route
   useEffect(() => {
@@ -113,7 +112,10 @@ export default function AdminDashboard() {
       } else if (type === "room") {
         setRoomFormData((prev) => ({ ...prev, image: fileData.secure_url }));
       } else if (type === "guest-room") {
-        setGuestRoomFormData((prev) => ({ ...prev, image: fileData.secure_url }));
+        setGuestRoomFormData((prev) => ({
+          ...prev,
+          image: fileData.secure_url,
+        }));
       }
     } catch (err) {
       console.error("Upload failed", err);
@@ -122,30 +124,36 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleHostelSubmit = async (e) => {
-    e.preventDefault();
-    const method = editingItem ? "PUT" : "POST";
-    const url = editingItem ? `/api/hostels/${editingItem._id}` : "/api/hostels";
-    const processedData = {
-      ...hostelFormData,
-      tags: typeof hostelFormData.tags === "string" ? hostelFormData.tags.split(",").map(t => t.trim()).filter(t => t !== "") : hostelFormData.tags,
-      amenities: typeof hostelFormData.amenities === "string" ? hostelFormData.amenities.split(",").map(a => a.trim()).filter(a => a !== "") : hostelFormData.amenities,
-    };
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(processedData),
-      });
-      if (res.ok) {
-        setIsModalOpen(false);
-        setEditingItem(null);
-        await refreshData();
-      }
-    } catch (err) {
-      console.error("Submit failed", err);
-    }
+ const handleHostelSubmit = async (e) => {
+  e.preventDefault();
+  const method = editingItem ? "PUT" : "POST";
+  const url = editingItem ? `/api/hostels/${editingItem._id}` : "/api/hostels";
+  
+  const processedData = {
+    name: hostelFormData.name,
+    location: hostelFormData.location,
+    image: hostelFormData.image,
+    isAvailable: hostelFormData.isAvailable,
   };
+
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(processedData),
+    });
+    if (res.ok) {
+      setIsModalOpen(false);
+      setEditingItem(null);
+      await refreshData();
+    } else {
+      const errData = await res.json();
+      alert("Error: " + JSON.stringify(errData));
+    }
+  } catch (err) {
+    console.error("Submit failed", err);
+  }
+};
 
   const handleRoomSubmit = async (e) => {
     e.preventDefault();
@@ -170,13 +178,17 @@ export default function AdminDashboard() {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          ...roomFormData, 
+        body: JSON.stringify({
+          ...roomFormData,
           rentUntil: finalRentUntil,
           rentDurationValue: roomFormData.rentMonths,
-          amenities: typeof roomFormData.amenities === "string" 
-            ? roomFormData.amenities.split(",").map(a => a.trim()).filter(a => a !== "")
-            : roomFormData.amenities
+          amenities:
+            typeof roomFormData.amenities === "string"
+              ? roomFormData.amenities
+                  .split(",")
+                  .map((a) => a.trim())
+                  .filter((a) => a !== "")
+              : roomFormData.amenities,
         }),
       });
       if (res.ok) {
@@ -195,13 +207,19 @@ export default function AdminDashboard() {
   const handleGuestRoomSubmit = async (e) => {
     e.preventDefault();
     const method = editingItem ? "PUT" : "POST";
-    const url = editingItem ? `/api/guestrooms/${editingItem._id}` : "/api/guestrooms";
-    
+    const url = editingItem
+      ? `/api/guestrooms/${editingItem._id}`
+      : "/api/guestrooms";
+
     const processedData = {
       ...guestRoomFormData,
-      amenities: typeof guestRoomFormData.amenities === "string" 
-        ? guestRoomFormData.amenities.split(",").map(a => a.trim()).filter(a => a !== "")
-        : guestRoomFormData.amenities
+      amenities:
+        typeof guestRoomFormData.amenities === "string"
+          ? guestRoomFormData.amenities
+              .split(",")
+              .map((a) => a.trim())
+              .filter((a) => a !== "")
+          : guestRoomFormData.amenities,
     };
 
     try {
@@ -273,7 +291,9 @@ export default function AdminDashboard() {
                 : room.hostelId,
             rentDurationUnit: room.rentDurationUnit || "Month",
             rentMonths: room.rentDurationValue || 0,
-            amenities: Array.isArray(room.amenities) ? room.amenities.join(", ") : room.amenities || "",
+            amenities: Array.isArray(room.amenities)
+              ? room.amenities.join(", ")
+              : room.amenities || "",
           }
         : {
             name: "",
@@ -303,7 +323,9 @@ export default function AdminDashboard() {
             ...room,
             gender: room.gender || "Any",
             sharing: room.sharing || "Single",
-            amenities: Array.isArray(room.amenities) ? room.amenities.join(", ") : room.amenities || "",
+            amenities: Array.isArray(room.amenities)
+              ? room.amenities.join(", ")
+              : room.amenities || "",
           }
         : {
             name: "",
@@ -394,9 +416,13 @@ export default function AdminDashboard() {
             >
               <Plus size={18} />
               <span>
-                {activeTab === "hostels" ? "Add Hostel" : 
-                 activeTab === "rooms" ? "Add Room" : 
-                 activeTab === "guest-rooms" ? "Add Guest Room" : "Add Item"}
+                {activeTab === "hostels"
+                  ? "Add Hostel"
+                  : activeTab === "rooms"
+                    ? "Add Room"
+                    : activeTab === "guest-rooms"
+                      ? "Add Guest Room"
+                      : "Add Item"}
               </span>
             </motion.button>
           </div>
@@ -534,10 +560,18 @@ export default function AdminDashboard() {
                 <thead>
                   <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-white/5">
                     <th className="px-8 py-6">
-                      {activeTab === "hostels" ? "Hostel Name" : activeTab === "rooms" ? "Room Unit" : "Guest Room"}
+                      {activeTab === "hostels"
+                        ? "Hostel Name"
+                        : activeTab === "rooms"
+                          ? "Room Unit"
+                          : "Guest Room"}
                     </th>
                     <th className="px-8 py-6">
-                      {activeTab === "hostels" ? "Location" : activeTab === "rooms" ? "Hostel" : "Room Number"}
+                      {activeTab === "hostels"
+                        ? "Location"
+                        : activeTab === "rooms"
+                          ? "Hostel"
+                          : "Room Number"}
                     </th>
                     <th className="px-8 py-6">
                       {activeTab === "hostels" ? "Status" : "Price"}
@@ -589,109 +623,111 @@ export default function AdminDashboard() {
                             </td>
                           </tr>
                         ))
-                    : activeTab === "rooms" 
-                    ? rooms
-                        .filter((r) =>
-                          r.name
-                            .toLowerCase()
-                            .includes(searchQuery.toLowerCase()),
-                        )
-                        .map((room) => (
-                          <tr
-                            key={room._id}
-                            className="hover:bg-white/2 transition-all group"
-                          >
-                            <td className="px-8 py-6 flex items-center space-x-4">
-                              {room.image && (
-                                <img
-                                  src={room.image}
-                                  className="h-10 w-10 rounded-lg object-cover"
-                                />
-                              )}
-                              <span className="font-bold text-sm uppercase italic tracking-tight">
-                                {room.name}
-                              </span>
-                            </td>
-                            <td className="px-8 py-6 text-slate-400 text-sm">
-                              {room.hostelId?.name || "N/A"} • {room.gender}
-                            </td>
-                            <td className="px-8 py-6 font-black text-blue-500">
-                              ৳{room.price}
-                            </td>
-                            <td className="px-8 py-6">
-                              <span
-                                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${room.isAvailable ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"}`}
-                              >
-                                {room.isAvailable ? "Available" : "Rented"}
-                              </span>
-                            </td>
-                            <td className="px-8 py-6 text-right space-x-2">
-                              <button
-                                onClick={() => openRoomModal(room)}
-                                className="p-3 bg-white/5 rounded-xl hover:bg-blue-600 transition-all text-slate-400 hover:text-white"
-                              >
-                                <Edit2 size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(room._id, "room")}
-                                className="p-3 bg-white/5 rounded-xl hover:bg-red-600 transition-all text-slate-400 hover:text-white"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                    : guestRooms
-                        .filter((gr) =>
-                          gr.name
-                            .toLowerCase()
-                            .includes(searchQuery.toLowerCase()),
-                        )
-                        .map((groom) => (
-                          <tr
-                            key={groom._id}
-                            className="hover:bg-white/2 transition-all group"
-                          >
-                            <td className="px-8 py-6 flex items-center space-x-4">
-                              {groom.image && (
-                                <img
-                                  src={groom.image}
-                                  className="h-10 w-10 rounded-lg object-cover"
-                                />
-                              )}
-                              <span className="font-bold text-sm uppercase italic tracking-tight">
-                                {groom.name}
-                              </span>
-                            </td>
-                            <td className="px-8 py-6 text-slate-400 text-sm italic font-bold">
-                              No. {groom.roomNumber} • {groom.type}
-                            </td>
-                            <td className="px-8 py-6 font-black text-blue-500">
-                              ৳{groom.price}/{groom.rentCycle}
-                            </td>
-                            <td className="px-8 py-6">
-                              <span
-                                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${groom.isAvailable ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"}`}
-                              >
-                                {groom.isAvailable ? "Available" : "Occupied"}
-                              </span>
-                            </td>
-                            <td className="px-8 py-6 text-right space-x-2">
-                              <button
-                                onClick={() => openGuestRoomModal(groom)}
-                                className="p-3 bg-white/5 rounded-xl hover:bg-blue-600 transition-all text-slate-400 hover:text-white"
-                              >
-                                <Edit2 size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(groom._id, "guestroom")}
-                                className="p-3 bg-white/5 rounded-xl hover:bg-red-600 transition-all text-slate-400 hover:text-white"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
+                    : activeTab === "rooms"
+                      ? rooms
+                          .filter((r) =>
+                            r.name
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase()),
+                          )
+                          .map((room) => (
+                            <tr
+                              key={room._id}
+                              className="hover:bg-white/2 transition-all group"
+                            >
+                              <td className="px-8 py-6 flex items-center space-x-4">
+                                {room.image && (
+                                  <img
+                                    src={room.image}
+                                    className="h-10 w-10 rounded-lg object-cover"
+                                  />
+                                )}
+                                <span className="font-bold text-sm uppercase italic tracking-tight">
+                                  {room.name}
+                                </span>
+                              </td>
+                              <td className="px-8 py-6 text-slate-400 text-sm">
+                                {room.hostelId?.name || "N/A"} • {room.gender}
+                              </td>
+                              <td className="px-8 py-6 font-black text-blue-500">
+                                ৳{room.price}
+                              </td>
+                              <td className="px-8 py-6">
+                                <span
+                                  className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${room.isAvailable ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"}`}
+                                >
+                                  {room.isAvailable ? "Available" : "Rented"}
+                                </span>
+                              </td>
+                              <td className="px-8 py-6 text-right space-x-2">
+                                <button
+                                  onClick={() => openRoomModal(room)}
+                                  className="p-3 bg-white/5 rounded-xl hover:bg-blue-600 transition-all text-slate-400 hover:text-white"
+                                >
+                                  <Edit2 size={16} />
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(room._id, "room")}
+                                  className="p-3 bg-white/5 rounded-xl hover:bg-red-600 transition-all text-slate-400 hover:text-white"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                      : guestRooms
+                          .filter((gr) =>
+                            gr.name
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase()),
+                          )
+                          .map((groom) => (
+                            <tr
+                              key={groom._id}
+                              className="hover:bg-white/2 transition-all group"
+                            >
+                              <td className="px-8 py-6 flex items-center space-x-4">
+                                {groom.image && (
+                                  <img
+                                    src={groom.image}
+                                    className="h-10 w-10 rounded-lg object-cover"
+                                  />
+                                )}
+                                <span className="font-bold text-sm uppercase italic tracking-tight">
+                                  {groom.name}
+                                </span>
+                              </td>
+                              <td className="px-8 py-6 text-slate-400 text-sm italic font-bold">
+                                No. {groom.roomNumber} • {groom.type}
+                              </td>
+                              <td className="px-8 py-6 font-black text-blue-500">
+                                ৳{groom.price}/{groom.rentCycle}
+                              </td>
+                              <td className="px-8 py-6">
+                                <span
+                                  className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${groom.isAvailable ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"}`}
+                                >
+                                  {groom.isAvailable ? "Available" : "Occupied"}
+                                </span>
+                              </td>
+                              <td className="px-8 py-6 text-right space-x-2">
+                                <button
+                                  onClick={() => openGuestRoomModal(groom)}
+                                  className="p-3 bg-white/5 rounded-xl hover:bg-blue-600 transition-all text-slate-400 hover:text-white"
+                                >
+                                  <Edit2 size={16} />
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleDelete(groom._id, "guestroom")
+                                  }
+                                  className="p-3 bg-white/5 rounded-xl hover:bg-red-600 transition-all text-slate-400 hover:text-white"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
                 </tbody>
               </table>
             </div>
@@ -720,7 +756,11 @@ export default function AdminDashboard() {
                 <h2 className="text-2xl lg:text-3xl font-black italic uppercase tracking-tighter">
                   {editingItem ? "Edit" : "Add"}{" "}
                   <span className="text-blue-500">
-                    {activeTab === "rooms" ? "Room" : activeTab === "guest-rooms" ? "Guest Room" : "Hostel"}
+                    {activeTab === "rooms"
+                      ? "Room"
+                      : activeTab === "guest-rooms"
+                        ? "Guest Room"
+                        : "Hostel"}
                   </span>
                 </h2>
                 <button
@@ -863,9 +903,18 @@ export default function AdminDashboard() {
                             }
                             className="w-full bg-white/5 border border-white/5 p-4 rounded-2xl outline-none font-bold appearance-none"
                           >
-                            <option value="Male Only" className="bg-[#111111]">Male Only</option>
-                            <option value="Female Only" className="bg-[#111111]">Female Only</option>
-                            <option value="Any" className="bg-[#111111]">Any Gender</option>
+                            <option value="Male Only" className="bg-[#111111]">
+                              Male Only
+                            </option>
+                            <option
+                              value="Female Only"
+                              className="bg-[#111111]"
+                            >
+                              Female Only
+                            </option>
+                            <option value="Any" className="bg-[#111111]">
+                              Any Gender
+                            </option>
                           </select>
                         </div>
                         <div className="space-y-2">
@@ -882,9 +931,15 @@ export default function AdminDashboard() {
                             }
                             className="w-full bg-white/5 border border-white/5 p-4 rounded-2xl outline-none font-bold appearance-none"
                           >
-                            <option value="Single" className="bg-[#111111]">Single</option>
-                            <option value="Double" className="bg-[#111111]">Double</option>
-                            <option value="Triple" className="bg-[#111111]">Triple</option>
+                            <option value="Single" className="bg-[#111111]">
+                              Single
+                            </option>
+                            <option value="Double" className="bg-[#111111]">
+                              Double
+                            </option>
+                            <option value="Triple" className="bg-[#111111]">
+                              Triple
+                            </option>
                           </select>
                         </div>
                       </div>
