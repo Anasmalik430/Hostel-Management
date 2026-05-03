@@ -61,7 +61,7 @@ const Locations = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="group relative h-[500px] rounded-[48px] overflow-hidden bg-white shadow-sm border border-slate-100 hover:shadow-2xl transition-all duration-700"
+              className="group cursor-pointer relative h-[500px] rounded-[48px] overflow-hidden bg-white shadow-sm border border-slate-100 hover:shadow-2xl transition-all duration-700"
             >
               {/* Background Image */}
               <div className="absolute inset-0 z-0">
@@ -89,13 +89,13 @@ const Locations = () => {
                   <p className="text-sm text-white/60 font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
                     {loc.desc}
                   </p>
-                  <motion.button
+                  {/* <motion.button
                     whileHover={{ x: 10 }}
                     className="flex items-center space-x-2 text-white font-black text-[10px] uppercase tracking-widest pt-4"
                   >
                     <span>View Hostels</span>
                     <FaArrowRight className="text-[#2563EB]" />
-                  </motion.button>
+                  </motion.button> */}
                 </div>
               </div>
 

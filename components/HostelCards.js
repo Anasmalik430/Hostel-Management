@@ -81,33 +81,27 @@ const HostelCards = ({ filters }) => {
   return (
     <div id="properties" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-slate-50/30">
       {/* Header Section */}
-      <div className="mb-16 flex flex-col lg:flex-row justify-between items-center gap-10 relative">
-        <div className="space-y-6 text-center lg:text-left">
+      <div className="mb-20 flex flex-col lg:flex-row justify-between items-center lg:items-end gap-10">
+        <div className="text-center lg:text-left">
           <h2 className="text-6xl md:text-7xl font-black italic uppercase tracking-tighter text-[#111111] leading-none">
             DISCOVER <br /><span className="text-blue-600">ELITE</span> STAYS
           </h2>
-          
-          {/* Toggle Switch */}
-          <div className="inline-flex p-1.5 bg-white rounded-full border border-slate-200 shadow-xl shadow-blue-500/5">
-            <button 
-              onClick={() => setActiveStayType("hostel")}
-              className={`px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-widest transition-all duration-500 ${activeStayType === "hostel" ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" : "text-slate-400 hover:text-slate-600"}`}
-            >
-              Hostel Rooms
-            </button>
-            <button 
-              onClick={() => setActiveStayType("guest")}
-              className={`px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-widest transition-all duration-500 ${activeStayType === "guest" ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" : "text-slate-400 hover:text-slate-600"}`}
-            >
-              Guest Rooms
-            </button>
-          </div>
         </div>
-        <div className="text-right">
-          <p className="text-[11px] font-black italic text-[#8EABDC] uppercase tracking-widest mb-1">
-            Showing {displayRooms.length} {activeStayType === "hostel" ? "Hostel" : "Guest"} Results
-          </p>
-          <div className="h-1.5 w-24 bg-[#4F86F7] ml-auto rounded-full" />
+
+        {/* Toggle Switch */}
+        <div className="inline-flex p-1.5 bg-white rounded-full border border-slate-200 shadow-2xl shadow-blue-500/10">
+          <button 
+            onClick={() => setActiveStayType("hostel")}
+            className={`px-10 py-4 rounded-full font-black text-[11px] uppercase tracking-widest transition-all duration-700 ${activeStayType === "hostel" ? "bg-blue-600 text-white shadow-xl shadow-blue-500/30" : "text-slate-400 hover:text-slate-600"}`}
+          >
+            Hostel Rooms
+          </button>
+          <button 
+            onClick={() => setActiveStayType("guest")}
+            className={`px-10 py-4 rounded-full font-black text-[11px] uppercase tracking-widest transition-all duration-700 ${activeStayType === "guest" ? "bg-blue-600 text-white shadow-xl shadow-blue-500/30" : "text-slate-400 hover:text-slate-600"}`}
+          >
+            Guest Rooms
+          </button>
         </div>
       </div>
 
