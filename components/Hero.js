@@ -9,7 +9,6 @@ const BACKGROUND_IMAGES = [
   "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=2070&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1520277739336-7bf67edfa768?q=80&w=2070&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop",
-  // "https://images.unsplash.com/photo-1555854817-5b2147a52d0f?q=80&w=2070&auto=format&fit=crop",
 ];
 
 const Hero = ({ onSearch }) => {
