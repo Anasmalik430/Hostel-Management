@@ -8,7 +8,7 @@ import { Search, MapPin, ChevronDown, ArrowRight } from "lucide-react";
 const BACKGROUND_IMAGES = [
   "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=2070&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1520277739336-7bf67edfa768?q=80&w=2070&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1585681438125-2b9835272f4b?q=80&w=1171&auto=format&fit=crop",
 ];
 
 const Hero = ({ onSearch }) => {
