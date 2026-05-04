@@ -135,7 +135,7 @@ const HostelCards = ({ filters }) => {
                 <div className="flex flex-col md:flex-row justify-between items-start gap-1 md:gap-0">
                   <div className="space-y-0.5 md:space-y-2">
                     <h3 className="text-xs md:text-2xl font-black italic uppercase tracking-tighter text-[#111111] group-hover:text-blue-600 transition-colors leading-tight">{room.name}</h3>
-                    <div className="flex items-center text-slate-400 text-[8px] md:text-xs font-bold italic"><MapPin className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 mr-1 md:mr-2 text-blue-500 flex-shrink-0" /><span className="truncate">{room.location || "Elite Guest Stay"}</span></div>
+                    <div className="flex items-center text-slate-400 text-[8px] md:text-xs font-bold italic"><MapPin className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 mr-1 md:mr-2 text-blue-500 shrink-0" /><span className="truncate max-w-24 text-ellipsis">{room.location || "Elite Guest Stay"}</span></div>
                   </div>
                   <div className="text-left md:text-right mt-1 md:mt-0">
                     <p className="text-[7px] md:text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none mb-0.5 md:mb-0">{room.rentCycle || (activeStayType === 'hostel' ? 'Monthly' : 'Daily')}</p>
